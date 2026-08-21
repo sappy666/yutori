@@ -35,7 +35,7 @@
     50% { transform: scale(1.08); opacity: 1; }
   }
 
-  /* Scroll Reveal Styles - Opacidad 1 por defecto por seguridad */
+  /* Scroll Reveal Styles */
   .reveal {
     opacity: 1;
     transform: translateY(0);
@@ -171,10 +171,6 @@
   .field input::placeholder,.field textarea::placeholder{color:#5f5c55}
   .field input:focus,.field textarea:focus{outline:none;border-color:var(--red)}
   .field textarea{resize:vertical;min-height:56px}
-  .seg{display:flex;gap:8px}
-  .seg label{flex:1;text-align:center;padding:10px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;font-weight:600;font-size:.88rem;background:var(--bg);transition:.15s;text-transform:none;letter-spacing:0;color:var(--text);margin:0}
-  .seg input{position:absolute;opacity:0;pointer-events:none}
-  .seg input:checked + label{background:var(--red);color:#fff;border-color:var(--red)}
 
   .drawer-foot{padding:18px 20px;border-top:1px solid var(--line);background:var(--surface-2)}
   .totals{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
@@ -220,7 +216,7 @@
       <div>
         <div class="eyebrow">El Arte del Sushi & Fusión Nikkei</div>
         <h1>Sabor, Creatividad y Pasión en <em>cada Bocado</em>.</h1>
-        <p>Rolls preparados al momento con ingredientes frescos. Arma tu pedido para llevar o delivery y te lo confirmamos al toque por WhatsApp.</p>
+        <p>Rolls preparados al momento con ingredientes frescos. Haz tu pedido y retíralo directamente en nuestro local.</p>
         <div class="hero-cta">
           <a class="btn btn-red" href="#carta">Ver la carta</a>
           <a class="btn btn-ghost" href="https://www.instagram.com/yutori_sushi_food/" target="_blank" rel="noopener">Instagram</a>
@@ -229,7 +225,7 @@
       <div class="kana-vert" aria-hidden="true">ゆとり</div>
     </div>
     <div class="hero-strip">
-      <span><span class="dot">&#9679;</span> <b>Ubicación</b> Etchevers 210, dpto 301, Viña del Mar (Solo para llevar y delivery)</span>
+      <span><span class="dot">&#9679;</span> <b>Ubicación</b> Etchevers 210, dpto 301, Viña del Mar (Solo para llevar)</span>
       <span><span class="dot">&#9679;</span> <b>Horario</b> Mar a Dom &middot; 18:00&ndash;23:00</span>
       <span><span class="dot">&#9679;</span> <b>Pedidos</b> por WhatsApp</span>
     </div>
@@ -254,7 +250,7 @@
     </div>
     <div>
       <div class="lbl">Ubicación</div>
-      <p style="font-size:.9rem; color:var(--muted)">Etchevers 210, dpto 301<br>Viña del Mar, Chile 2520000<br><b style="color:var(--text)">(Solo para llevar y delivery)</b></p>
+      <p style="font-size:.9rem; color:var(--muted)">Etchevers 210, dpto 301<br>Viña del Mar, Chile 2520000<br><b style="color:var(--text)">(Solo para llevar)</b></p>
     </div>
     <div>
       <div class="lbl">Contacto</div>
@@ -297,43 +293,141 @@
    CARTA Y CONFIGURACIÓN DE YUTORI
    ============================================================ */
 const MENU = [
-  { cat:"Promociones", items:[
-    { n:"Promo 30 cortes", d:"Mix de rolls variados. Ideal para 2 personas.", p:12990 },
-    { n:"Promo 45 cortes", d:"Selección mixta de la casa para compartir.", p:17990 },
-    { n:"Promo Yutori 60 cortes", d:"La más pedida. Perfecta para 3–4 personas.", p:23990 },
+  { cat:"Combinaciones", items:[
+    { n:"24 Piezas", d:"10 Camarón furay, queso crema, cebollín (envuelto en palta) + 10 Pollo teriyaki, queso crema, cebollín (envuelto en panko) + 2 Niguiri de Salmón + 2 Niguiri de Palta", p:14990 },
+    { n:"36 Piezas", d:"10 Camarón furay, queso crema, cebollín (envuelto en panko) + 10 Pollo teriyaki, palta, pimentón (envuelto en panko) + 10 Kanikama, queso crema, palta (envuelto en panko) + 6 Tori balls", p:18990 },
+    { n:"30 Piezas Sin Arroz", d:"10 Salmón/camarón furay, queso crema, cebollín (envuelto en palta) + 10 Pollo teriyaki, palta, pimentón, cebollín (envuelto en queso crema) + 10 Salmón/camarón furay, queso crema, cebollín (envuelto en panko)", p:19990 },
+    { n:"40 Piezas Vegetariana", d:"10 Aceituna, queso crema, palta (envuelto en sésamo) + 10 Palmito, queso crema, pimentón (envuelto en palta) + 10 Pimentón, queso crema, cebollín (envuelto en panko) + 10 Palta, queso crema, cebollín (envuelto en panko)", p:15990 },
+    { n:"46 Piezas", d:"10 Kanikama, queso crema, palta (sésamo) + 10 Camarón furay, queso crema, cebollín (palta) + 10 Camarón furay, queso crema, cebollín (panko) + 10 Pollo teriyaki, queso crema, cebollín (panko) + 6 Korokes", p:19990 },
+    { n:"50.A Piezas", d:"10 Salmón, queso crema, palta (sésamo) + 10 Camarón furay, queso crema, cebollín (palta) + 10 Pollo teriyaki, queso crema, cebollín (panko) + 2 Niguiri de palta + 2 Niguiri de salmón + 5 Korokes + 5 Gyosas + 3 Pollo furay + 3 Camarón furay", p:24990 },
+    { n:"50.B Piezas", d:"10 Salmón, queso crema, palta (sésamo) + 10 Camarón furay, queso crema, cebollín (panko) + 10 Pollo teriyaki, queso crema, cebollín (palta) + 10 Pollo teriyaki, palta, pimentón (queso crema) + 10 Pollo, queso crema, cebollín (panko)", p:23990 },
+    { n:"60 Piezas", d:"10 Salmón, queso crema, palta (sésamo) + 10 Camarón furay, queso crema, cebollín (panko) + 10 Pollo teriyaki, queso crema, cebollín (palta) + 10 Aceituna, queso crema, palta (panko) + 10 Pollo, pimentón, palta (panko) + 10 Palta, queso crema (nori)", p:25990 },
+  ]},
+  { cat:"Colaciones", items:[
+    { n:"Colación 1", d:"10 Pollo teriyaki, queso crema, cebollín (envuelto en panko) + 3 Tori balls. Incluye 2 salsas Soya o Teriyaki.", p:5990 },
+    { n:"Colación 2", d:"5 Pollo teriyaki, queso crema, cebollín (panko) + 5 Kanikama, queso crema, palta (sésamo) + 5 Camarón furay, queso crema, cebollín (palta). Incluye 2 salsas Soya o Teriyaki.", p:5990 },
+    { n:"Colación 3", d:"10 Pimentón, queso crema, cebollín (envuelto en panko) + 10 Aceituna, queso crema, palta (envuelto en sésamo). Incluye 2 salsas Soya o Teriyaki.", p:5990 },
+  ]},
+  { cat:"Avocado Rolls", items:[
+    { n:"1. Camarón, queso crema, cebollín", d:"Envuelto en palta.", p:4600 },
+    { n:"2. Pollo teriyaki, queso crema", d:"Envuelto en palta.", p:4300 },
+    { n:"3. Pollo teriyaki, queso crema, cebollín", d:"Envuelto en palta.", p:4500 },
+    { n:"4. Pollo furay, queso crema, almendras tostadas", d:"Envuelto en palta.", p:4800 },
+    { n:"5. Camarón furay, queso crema", d:"Envuelto en palta.", p:4700 },
+    { n:"6. Salmón furay, queso crema, cebollín", d:"Envuelto en palta.", p:5100 },
+    { n:"7. Salmón, queso crema, camarón", d:"Envuelto en palta.", p:5500 },
+    { n:"8. Salmón, queso crema, palta", d:"Envuelto en palta.", p:5100 },
+    { n:"9. Champiñón, queso crema, pimentón", d:"Envuelto en palta.", p:4500 },
+  ]},
+  { cat:"Sake Rolls", items:[
+    { n:"10. Camarón furay, cebollín", d:"Envuelto en salmón.", p:5500 },
+    { n:"11. Palta, queso crema", d:"Envuelto en salmón.", p:5100 },
+    { n:"12. Camarón, queso crema, cebollín", d:"Envuelto en salmón.", p:5600 },
+    { n:"13. Camarón, palta, cebollín", d:"Envuelto en salmón.", p:5500 },
+    { n:"14. Salmón, queso crema, palta", d:"Envuelto en salmón.", p:5800 },
+    { n:"15. Camarón, queso crema, palta", d:"Envuelto en salmón.", p:5600 },
+  ]},
+  { cat:"Cheese Rolls", items:[
+    { n:"20. Pollo teriyaki, palta", d:"Envuelto en queso crema.", p:4300 },
+    { n:"21. Pollo teriyaki, palta, cebollín", d:"Envuelto en queso crema.", p:4800 },
+    { n:"22. Pimentón, palta, palmito", d:"Envuelto en queso crema.", p:4400 },
+    { n:"23. Camarón, palta, cebollín", d:"Envuelto en queso crema.", p:5600 },
+    { n:"24. Salmón, palta, cebollín", d:"Envuelto en queso crema.", p:5800 },
+    { n:"25. Salmón, palta, camarón", d:"Envuelto en queso crema.", p:5400 },
+    { n:"26. Pollo teriyaki, cebollín, almendras tostadas", d:"Envuelto en queso crema.", p:4600 },
   ]},
   { cat:"California Rolls", items:[
-    { n:"California salmón palta", d:"Salmón, palta y queso crema, envuelto en sésamo. 10 cortes.", p:6490 },
-    { n:"Kanikama palta queso", d:"Kanikama, palta y queso crema. 10 cortes.", p:5990 },
-    { n:"Camarón palta", d:"Camarón, palta y queso crema. 10 cortes.", p:6490 },
-    { n:"Sake philadelphia", d:"Salmón por fuera, palta y queso crema. 10 cortes.", p:6990 },
+    { n:"30. Pollo teriyaki, queso crema, palta", d:"Envuelto en sésamo o masago.", p:4100 },
+    { n:"31. Camarón furay, queso crema, palta", d:"Envuelto en sésamo o masago.", p:4400 },
+    { n:"32. Camarón, queso crema, cebollín", d:"Envuelto en sésamo o masago.", p:4100 },
+    { n:"33. Salmón, queso crema, palta", d:"Envuelto en sésamo o masago.", p:4500 },
+    { n:"34. Salmón, queso crema, camarón, cebollín", d:"Envuelto en sésamo o masago.", p:4800 },
+    { n:"35. Champiñón, queso crema, pimentón, almendras tostadas", d:"Envuelto en sésamo o masago.", p:4100 },
   ]},
   { cat:"Hot Rolls", items:[
-    { n:"Hot salmón queso", d:"Apanado crujiente, salmón y queso crema. 10 cortes.", p:6990 },
-    { n:"Hot camarón queso", d:"Apanado crujiente con camarón y queso. 10 cortes.", p:6990 },
-    { n:"Tori panko", d:"Pollo, palta y queso, cubierto en panko. 10 cortes.", p:6490 },
-    { n:"Hot veggie", d:"Champiñón, palta y queso, apanado. 10 cortes.", p:5990 },
+    { n:"40. Camarón, queso crema, cebollín", d:"Frito en panko.", p:4400 },
+    { n:"41. Pollo teriyaki, queso crema", d:"Frito en panko.", p:4100 },
+    { n:"42. Pollo teriyaki, queso crema, cebollín", d:"Frito en panko.", p:4200 },
+    { n:"43. Salmón, queso crema, palta", d:"Frito en panko.", p:4900 },
+    { n:"44. Salmón, queso crema, cebollín", d:"Frito en panko.", p:4500 },
+    { n:"45. Camarón merkén, queso crema, palta", d:"Frito en panko.", p:4600 },
+    { n:"46. Salmón, queso crema, camarón, cebollín", d:"Frito en panko.", p:5000 },
+    { n:"47. Champiñón, queso crema, pimentón, almendras tostadas", d:"Frito en panko.", p:4200 },
   ]},
-  { cat:"Premium", items:[
-    { n:"Ebi furai premium", d:"Camarón furai, palta y salsa anguila. 10 cortes.", p:8490 },
-    { n:"Tuna spicy", d:"Atún fresco, palta y salsa spicy. 10 cortes.", p:8990 },
-    { n:"Rainbow roll", d:"California cubierto de salmón, atún y palta. 10 cortes.", p:8990 },
+  { cat:"Rolls Sin Arroz", items:[
+    { n:"50. Pollo teriyaki, queso crema, cebollín, pimentón", d:"Envuelto en palta.", p:5800 },
+    { n:"51. Salmón, camarón, queso crema, cebollín", d:"Envuelto en palta.", p:6400 },
+    { n:"52. Pollo teriyaki, queso crema, cebollín, palta", d:"Envuelto en panko.", p:5800 },
+    { n:"53. Pollo furay, palta, cebollín, pimentón", d:"Envuelto en queso crema.", p:5800 },
+    { n:"54. Camarón furay, palta, cebollín", d:"Envuelto en salmón.", p:6400 },
+    { n:"55. Salmón, queso crema, palta, pepino", d:"Envuelto en panko.", p:6400 },
   ]},
-  { cat:"Handrolls & Nigiri", items:[
-    { n:"Handroll salmón queso", d:"Cono de alga con salmón, palta y queso.", p:3990 },
-    { n:"Nigiri salmón (2u)", d:"Arroz prensado con lámina de salmón fresco.", p:2990 },
-    { n:"Sashimi salmón (6u)", d:"Cortes de salmón fresco, sin arroz.", p:6990 },
+  { cat:"Rolls Nikkei", items:[
+    { n:"60. Nikkei Ceviche Salmón", d:"Camarón furay, queso crema, envuelto en palta con topping de ceviche de salmón.", p:8990 },
+    { n:"61. Nikkei Ceviche Mixto", d:"Palta, queso crema, envuelto en panko con topping de ceviche salmón/camarón.", p:8990 },
+    { n:"62. Nikkei Tartar Camarón", d:"Salmón, queso crema, cebollín, envuelto en palta con topping de tartar de camarón furay y salsa acevichada.", p:8990 },
+    { n:"63. Nikkei Tartar Salmón", d:"Palta, queso crema, envuelto en panko con topping de tartar de salmón.", p:8990 },
+    { n:"64. Nikkei Tarí Gratinado", d:"Camarón furay, queso crema, envuelto en panko con topping de salsa Tarí gratinada, salsa unagui y toques de ciboulette.", p:8490 },
+    { n:"65. Nikkei Oliva & Camote", d:"Pulpo, palta, queso crema, ciboulette, envuelto en palta con topping de salsa oliva y camote.", p:8490 },
+    { n:"66. Nikkei Arcoíris (Sin arroz)", d:"Camarón furay, queso crema, palta, envuelto en plaqueta arcoíris de salmón, queso crema, palta, sésamo, ciboulette, kakiage de camote con topping de salsa maracuyá.", p:8990 },
+    { n:"67. Nikkei Reina Pepiada", d:"Champiñón salteado, queso crema, ciboulette, envuelto en panko con topping de Reina pepiada (pollo, palta, mayonesa).", p:7990 },
+    { n:"68. Nikkei Salmón Flameado", d:"Salmón/camarón, queso crema, cebollín, envuelto en salmón flameado con salsa acevichada y toques de ciboulette.", p:8990 },
+    { n:"69. Nikkei Nori Panko", d:"Champiñón salteado/camarón, cilantro, queso crema, envuelto en nori en panko con topping de salsa Tarí.", p:7990 },
+    { n:"70. Nikkei Plátano Maduro", d:"Pollo tempura, queso crema, palta, envuelto en plátano maduro con topping de salsa maracuyá y camote en hilo.", p:7990 },
   ]},
-  { cat:"Acompañamientos", items:[
-    { n:"Gyozas (5u)", d:"Empanaditas japonesas de la casa.", p:4490 },
-    { n:"Arroz chaufa", d:"Arroz salteado estilo nikkei.", p:4990 },
-    { n:"Salsa teriyaki extra", d:"Porción adicional.", p:990 },
-    { n:"Jengibre / wasabi extra", d:"Porción adicional.", p:500 },
+  { cat:"Handrolls & Gohan", items:[
+    { n:"Handroll Pollo (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3200 },
+    { n:"Handroll Pollo (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3700 },
+    { n:"Handroll Camarón (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3700 },
+    { n:"Handroll Camarón (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:4200 },
+    { n:"Handroll Salmón (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:4200 },
+    { n:"Handroll Salmón (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:4700 },
+    { n:"Handroll Kanikama (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3200 },
+    { n:"Handroll Kanikama (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3700 },
+    { n:"Handroll Vegetariano (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3200 },
+    { n:"Handroll Vegetariano (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3700 },
+    { n:"Gohan Pollo Furay", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:5990 },
+    { n:"Gohan Camarón Furay", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:6990 },
+    { n:"Gohan Salmón", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:7490 },
+    { n:"Gohan Acevichado", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:7990 },
+    { n:"Gohan Vegetariano", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:5990 },
   ]},
-  { cat:"Bebidas", items:[
-    { n:"Bebida lata 350ml", d:"Coca-Cola, Sprite, Fanta.", p:1490 },
-    { n:"Agua mineral", d:"Con o sin gas.", p:1290 },
-    { n:"Ramune", d:"Bebida japonesa de soda.", p:2990 },
+  { cat:"Ceviche & Sashimi", items:[
+    { n:"Sashimi Salmón (6 piezas)", d:"Finos cortes de salmón crudo.", p:6000 },
+    { n:"Ceviche de Salmón", d:"Salmón fresco, cebolla morada, choclo peruano, pimentón, cilantro y kakiage de camote, bañado en leche de tigre yutori.", p:7990 },
+    { n:"Ceviche de Salmón / Camarón", d:"Salmón fresco, camarón ecuatoriano, cebolla morada, pimentón, choclo peruano, cilantro y kakiage de camote, bañado en leche de tigre yutori.", p:7990 },
+    { n:"Ceviche de Champiñón / Mango", d:"Champiñón fresco, cebolla morada, choclo peruano, mango, pimentón, cilantro y kakiage de camote, bañado en leche de tigre yutori.", p:7990 },
+    { n:"Ceviche Yutori", d:"Salmón fresco, camarón ecuatoriano, pulpo, reineta, cebolla morada, pimentón, choclo peruano, cilantro, kakiage de camote, bañado en leche de tigre yutori.", p:9990 },
+  ]},
+  { cat:"Cocina Caliente", items:[
+    { n:"Arrollados Primavera (3u)", d:"Crujientes arrollados de verdura + 1 salsa.", p:2000 },
+    { n:"Arrollados Primavera (6u)", d:"Crujientes arrollados de verdura + 1 salsa.", p:3000 },
+    { n:"Korokes (6u)", d:"Bolitas de arroz con queso crema apanadas en panko.", p:2500 },
+    { n:"Tori Balls (6u)", d:"Bolitas de pollo con queso crema apanadas en panko.", p:4990 },
+    { n:"Pollo Furay (6u)", d:"Trozos apanados en panko.", p:4000 },
+    { n:"Camarón Furay (6u)", d:"Camarones apanados en panko.", p:4600 },
+    { n:"Salmón Furay (6u)", d:"Cortes de salmón apanados en panko.", p:6000 },
+    { n:"Zucchini Furay (6u)", d:"Zucchini apanado en panko.", p:4000 },
+    { n:"Gyosas Pollo (6u)", d:"Empanadas japonesas.", p:3500 },
+    { n:"Gyosas Camarón (6u)", d:"Empanadas japonesas.", p:3500 },
+    { n:"Gyosas Cerdo (6u)", d:"Empanadas japonesas.", p:3500 },
+    { n:"Gyosas Vegetal (6u)", d:"Empanadas japonesas.", p:3500 },
+  ]},
+  { cat:"Bebidas & Salsas", items:[
+    { n:"Coca-Cola Original 350cc", d:"Lata.", p:1200 },
+    { n:"Coca-Cola Zero 350cc", d:"Lata.", p:1200 },
+    { n:"Fanta 350cc", d:"Lata.", p:1200 },
+    { n:"Sprite 350cc", d:"Lata.", p:1200 },
+    { n:"Agua sin gas", d:"Botella.", p:1200 },
+    { n:"Agua con gas", d:"Botella.", p:1200 },
+    { n:"Salsa de Soya", d:"Porción adicional.", p:700 },
+    { n:"Salsa Teriyaki", d:"Porción adicional.", p:1000 },
+    { n:"Salsa Spicy", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Acevichada", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Tarí", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Oliva", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Honey Mustard", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Maracuyá", d:"Porción adicional.", p:1500 },
   ]},
 ];
 
@@ -456,27 +550,15 @@ function refresh(){
     <div class="fields">
       <div class="field"><label>Tu nombre</label>
         <input id="fName" type="text" placeholder="Ej: Camila Rojas" oninput="validate()"></div>
-      <div class="field"><label>Entrega</label>
-        <div class="seg">
-          <input type="radio" name="mode" id="mDeliv" value="Despacho a domicilio" checked>
-          <label for="mDeliv">Despacho</label>
-          <input type="radio" name="mode" id="mPick" value="Retiro en local">
-          <label for="mPick">Retiro</label>
-        </div>
+      <div class="field"><label>Modalidad de servicio</label>
+        <input type="text" value="Solo para llevar (Retiro en local)" disabled style="opacity:0.7; background:var(--surface-2)">
       </div>
-      <div class="field" id="addrField"><label>Dirección de despacho</label>
-        <input id="fAddr" type="text" placeholder="Calle, número, depto, comuna" oninput="validate()"></div>
-      <div class="field"><label>Notas (opcional)</label>
-        <textarea id="fNotes" placeholder="Ej: sin palta, tocar timbre, etc."></textarea></div>
+      <div class="field"><label>Notas / Indicaciones (opcional)</label>
+        <textarea id="fNotes" placeholder="Ej: sin palta, salsas extra, hora aproximada de retiro, etc."></textarea></div>
     </div>`;
 
   body.innerHTML=rows+fields;
   document.getElementById("total").textContent=clp(total);
-
-  document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{
-    document.getElementById("addrField").style.display = document.getElementById("mDeliv").checked ? "block":"none";
-    validate();
-  }));
   validate();
 }
 
@@ -489,17 +571,12 @@ function chg(uid,delta){
 function validate(){
   const btn=document.getElementById("waBtn"); if(!btn) return;
   const name=(document.getElementById("fName")?.value||"").trim();
-  const deliv=document.getElementById("mDeliv")?.checked;
-  const addr=(document.getElementById("fAddr")?.value||"").trim();
-  btn.disabled = !(name.length>1 && (!deliv || addr.length>3));
+  btn.disabled = !(name.length>1);
 }
 
 function sendWhatsApp(){
   if(cart.size===0) return;
   const name=document.getElementById("fName").value.trim();
-  const mode=document.querySelector('input[name="mode"]:checked').value;
-  const deliv=document.getElementById("mDeliv").checked;
-  const addr=document.getElementById("fAddr").value.trim();
   const notes=document.getElementById("fNotes").value.trim();
 
   let total=0, lines=[];
@@ -508,12 +585,11 @@ function sendWhatsApp(){
     lines.push(`• ${qty}× ${it.n} — ${clp(sub)}`);
   });
 
-  let msg = `¡Hola Yutori! 🍣 Quiero hacer un pedido:\n\n`;
+  let msg = `¡Hola Yutori! 🍣 Quiero hacer un pedido para RETIRO:\n\n`;
   msg += lines.join("\n");
   msg += `\n\n*Total: ${clp(total)}*`;
   msg += `\n\n👤 Nombre: ${name}`;
-  msg += `\n🛵 Entrega: ${mode}`;
-  if(deliv) msg += `\n📍 Dirección: ${addr}`;
+  msg += `\n🛍️ Modalidad: Solo para llevar (Retiro en local)`;
   if(notes) msg += `\n📝 Notas: ${notes}`;
 
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
