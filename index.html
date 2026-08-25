@@ -306,6 +306,7 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- BLOQUE DE SCRIPT CORRECTAMENTE AISLADO -->
 <script>
 const DEFAULT_MENU = [
   { cat:"Combinaciones", items:[
@@ -446,11 +447,9 @@ const DEFAULT_MENU = [
   ]}
 ];
 
-// Limpiamos el almacenamiento local obsoleto para forzar el uso del menú completo por defecto
 let savedMenu = localStorage.getItem("yutori_menu");
 let MENU = savedMenu ? JSON.parse(savedMenu) : DEFAULT_MENU;
 
-// Si por alguna razón el menú guardado estaba vacío, reasignamos el completo
 if(!MENU || MENU.length === 0) {
   MENU = DEFAULT_MENU;
 }
