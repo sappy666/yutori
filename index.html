@@ -127,8 +127,8 @@
   .search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;display:none;align-items:center;justify-content:center;color:var(--muted);font-size:1.35rem;transition:.15s}
   .search-clear:hover{background:var(--surface-2);color:var(--text)}
 
-  /* Navegación de categorías */
-  .cat-nav{position:sticky;top:62px;z-index:40;background:linear-gradient(var(--bg) 74%,transparent);padding:16px 0 12px;margin:26px 0 4px}
+  /* Navegación de categorías (CORREGIDA) */
+  .cat-nav{position:sticky;top:62px;z-index:40;background:rgba(10,10,12,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 0 12px;margin:26px 0 4px}
   .cats{display:flex;flex-wrap:wrap;gap:8px}
   .cats::-webkit-scrollbar{display:none}
   .cat{white-space:nowrap;padding:9px 17px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:500;font-size:.88rem;color:var(--muted);transition:.18s;text-decoration:none;cursor:pointer}
@@ -337,6 +337,19 @@
 
   .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120%);background:var(--red);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:200;transition:transform .3s;box-shadow:0 12px 30px -10px var(--red-glow)}
   .toast.show{transform:translate(-50%,0)}
+
+  /* Botón Flotante Scroll to Top */
+  .scroll-top-btn{
+    position:fixed;bottom:24px;right:24px;z-index:70;
+    width:46px;height:46px;border-radius:50%;
+    background:var(--surface);border:1.5px solid var(--line);color:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);opacity:0;visibility:hidden;
+    transform:translateY(10px);transition:all .25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .scroll-top-btn.show{opacity:1;visibility:visible;transform:translateY(0)}
+  .scroll-top-btn:hover{background:var(--red);border-color:var(--red);color:#fff;transform:translateY(-3px);box-shadow:0 8px 22px -8px var(--red-glow)}
+  .scroll-top-btn svg{width:20px;height:20px}
 </style>
 </head>
 <body>
@@ -486,6 +499,11 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Botón Scroll To Top -->
+<button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()" aria-label="Volver arriba">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
 
 <script>
 const DEFAULT_MENU = [
@@ -1273,6 +1291,21 @@ document.addEventListener("keydown", e => { if(e.key==="Escape"){ closeDrawer();
     }
   });
 })();
+
+// Control de visibilidad para el botón Scroll to Top
+window.addEventListener("scroll", () => {
+  const btn = document.getElementById("scrollTopBtn");
+  if (!btn) return;
+  if (window.scrollY > 400) {
+    btn.classList.add("show");
+  } else {
+    btn.classList.remove("show");
+  }
+});
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 </script>
 </body>
 </html>
