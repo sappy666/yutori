@@ -52,9 +52,33 @@
   .brand .kana{font-family:var(--serif);color:var(--red);font-size:1.05rem;opacity:.9}
   
   .header-actions { display: flex; gap: 10px; align-items: center; }
-  .cart-btn, .admin-toggle-btn{display:flex;align-items:center;gap:9px;background:var(--red);color:#fff;padding:10px 17px;border-radius:999px;font-weight:700;font-size:.9rem;transition:transform .15s, box-shadow .25s, background .2s}
-  .admin-toggle-btn { background: var(--surface-2); border: 1.5px solid var(--line); color: var(--muted); }
-  .admin-toggle-btn:hover { border-color: var(--red); color: var(--text); }
+  .cart-btn{display:flex;align-items:center;gap:9px;background:var(--red);color:#fff;padding:10px 17px;border-radius:999px;font-weight:700;font-size:.9rem;transition:transform .15s, box-shadow .25s, background .2s}
+  .admin-toggle-btn{
+    display:flex;align-items:center;justify-content:center;
+    width:40px;height:40px;border-radius:50%;
+    background:transparent;border:1.5px solid var(--line);color:var(--muted);
+    transition:transform .15s, border-color .2s, color .2s, background .2s;
+  }
+  .admin-toggle-btn svg{width:19px;height:19px}
+  .admin-toggle-btn:hover{border-color:var(--red);color:var(--red);transform:translateY(-1px)}
+  body.admin-mode .admin-toggle-btn{border-color:var(--red);color:#fff;background:var(--red);box-shadow:0 8px 22px -8px var(--red-glow)}
+
+  /* Kana con efecto neón al pasar el cursor */
+  .kana{transition:color .25s, text-shadow .3s, opacity .25s}
+  .brand .kana:hover,
+  .foot h4 .kana:hover,
+  .foot-bottom .kana:hover{
+    opacity:1;color:#ff4a56;
+    text-shadow:0 0 4px var(--red),0 0 12px var(--red),0 0 26px var(--red-glow),0 0 44px var(--red-glow);
+    animation:neonFlicker 1.4s infinite alternate;
+  }
+  @keyframes neonFlicker{
+    0%,18%,22%,25%,53%,57%,100%{
+      text-shadow:0 0 4px var(--red),0 0 12px var(--red),0 0 26px var(--red-glow),0 0 44px var(--red-glow);
+      opacity:1;
+    }
+    20%,24%,55%{ text-shadow:none; opacity:.55; }
+  }
   .cart-btn:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 8px 24px -6px var(--red-glow)}
   .cart-btn .count{background:#fff;color:var(--red);font-size:.75rem;font-weight:900;min-width:20px;height:20px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
 
@@ -128,7 +152,24 @@
   .admin-card-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
   .admin-card-btn.del:hover { background: #b30000; border-color: #b30000; }
 
-  footer{background:#050506;border-top:1px solid var(--line);margin-top:44px}
+  .ig-cta{position:relative;overflow:hidden;border-top:1px solid var(--line);background:var(--surface)}
+  .ig-cta::before{content:"";position:absolute;top:-60%;left:50%;transform:translateX(-50%);
+    width:70vw;height:70vw;background:radial-gradient(circle,var(--red-glow),transparent 60%);
+    filter:blur(30px);pointer-events:none;animation:pulseGlow 7s infinite ease-in-out}
+  .ig-inner{position:relative;z-index:2;max-width:1120px;margin:0 auto;padding:64px 20px;text-align:center;
+    display:flex;flex-direction:column;align-items:center;gap:20px}
+  .ig-cta .eyebrow{margin-bottom:0}
+  .ig-cta h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.8rem,4.5vw,2.8rem);line-height:1.1;letter-spacing:-.01em}
+  .ig-cta h2 em{font-style:normal;color:var(--red);text-shadow:0 0 40px var(--red-glow)}
+  .ig-cta p{color:#c9c5bc;max-width:46ch;font-size:1.02rem}
+  .ig-btn{display:inline-flex;align-items:center;gap:11px;padding:15px 30px;border-radius:999px;font-weight:700;
+    font-size:1rem;color:#fff;background:var(--red);box-shadow:0 12px 34px -10px var(--red-glow);
+    transition:transform .15s, background .2s, box-shadow .25s}
+  .ig-btn:hover{background:var(--red-d);transform:translateY(-2px);box-shadow:0 18px 44px -10px var(--red-glow)}
+  .ig-btn svg{width:22px;height:22px}
+  .ig-handle{color:var(--muted);font-size:.9rem;letter-spacing:.02em}
+
+  footer{background:#050506;border-top:1px solid var(--line)}
   .foot{max-width:1120px;margin:0 auto;padding:52px 20px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:28px}
   .foot h4{font-family:var(--serif);color:var(--text);font-size:1.4rem;margin-bottom:10px}
   .foot h4 .kana{color:var(--red)}
@@ -198,6 +239,32 @@
   }
   @media(max-width:820px){.foot{grid-template-columns:1fr 1fr}}
 
+  /* Modal de acceso admin */
+  .login-overlay{position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;padding:20px;
+    background:rgba(5,5,6,.72);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:.22s}
+  .login-overlay.open{opacity:1;visibility:visible}
+  .login-box{position:relative;width:min(360px,100%);background:var(--surface);border:1px solid var(--line);
+    border-radius:18px;padding:34px 28px 28px;box-shadow:var(--shadow);overflow:hidden;
+    transform:translateY(14px) scale(.98);transition:transform .28s cubic-bezier(.16,1,.3,1)}
+  .login-overlay.open .login-box{transform:translateY(0) scale(1)}
+  .login-box::before{content:"";position:absolute;top:-40%;right:-30%;width:70%;height:120%;
+    background:radial-gradient(circle,var(--red-glow),transparent 62%);filter:blur(20px);pointer-events:none}
+  .login-box .lg-kana{position:relative;font-family:var(--serif);font-weight:900;color:transparent;
+    -webkit-text-stroke:1.5px var(--red);text-shadow:0 0 30px var(--red-glow);font-size:2.6rem;line-height:1;margin-bottom:14px}
+  .login-box h3{position:relative;font-family:var(--serif);font-size:1.5rem;font-weight:900;margin-bottom:4px}
+  .login-box p{position:relative;color:var(--muted);font-size:.86rem;margin-bottom:22px}
+  .login-box .field{position:relative}
+  .login-box input{width:100%;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);
+    color:var(--text);font-family:inherit;font-size:1.1rem;letter-spacing:.3em;text-align:center;transition:.15s}
+  .login-box input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-glow)}
+  .login-box input.err{border-color:var(--red);animation:shake .35s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+  .login-err{position:relative;color:var(--red);font-size:.8rem;font-weight:700;min-height:18px;margin:9px 2px 0;text-align:center;opacity:0;transition:.15s}
+  .login-err.show{opacity:1}
+  .login-box .wa{margin-top:16px}
+  .login-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;font-size:1.4rem;color:var(--muted);transition:.15s;z-index:2}
+  .login-close:hover{background:var(--surface-2);color:var(--text)}
+
   .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120%);background:var(--red);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:200;transition:transform .3s;box-shadow:0 12px 30px -10px var(--red-glow)}
   .toast.show{transform:translate(-50%,0)}
 </style>
@@ -211,7 +278,9 @@
       <span class="kana">ゆとり</span>
     </a>
     <div class="header-actions">
-      <button class="admin-toggle-btn" onclick="toggleAdminMode()" title="Modo Administrador">⚙️ Admin</button>
+      <button class="admin-toggle-btn" onclick="toggleAdminMode()" title="Acceso administrador" aria-label="Acceso administrador">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>
+      </button>
       <button class="cart-btn" onclick="openCart()" aria-label="Ver carrito">
         <span>Mi pedido</span>
         <span class="count" id="hdrCount">0</span>
@@ -259,6 +328,19 @@
   <button class="btn btn-ghost" style="padding: 8px 16px; font-size: 0.85rem; border-color:var(--red); color:var(--red);" onclick="toggleAdminMode()">Salir</button>
 </div>
 
+<section class="ig-cta reveal">
+  <div class="ig-inner">
+    <div class="eyebrow">Comunidad Yutori <span class="kana">ゆとり</span></div>
+    <h2>Síguenos y no te pierdas <em>ningún roll</em>.</h2>
+    <p>Novedades, promos y nuestras creaciones Nikkei recién hechas. Todo primero en Instagram.</p>
+    <a class="ig-btn" href="https://www.instagram.com/yutori_sushi_food/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+      Seguir en Instagram
+    </a>
+    <span class="ig-handle">@yutori_sushi_food</span>
+  </div>
+</section>
+
 <footer class="reveal">
   <div class="foot">
     <div>
@@ -303,6 +385,21 @@
     <p class="wa-note">Se abrirá WhatsApp con tu pedido listo para enviar.</p>
   </div>
 </aside>
+
+<div class="login-overlay" id="loginOverlay" onclick="if(event.target===this)closeLogin()">
+  <div class="login-box" role="dialog" aria-modal="true" aria-label="Acceso administrador">
+    <button class="login-close" onclick="closeLogin()" aria-label="Cerrar">×</button>
+    <div class="lg-kana" aria-hidden="true">管理</div>
+    <h3>Acceso administrador</h3>
+    <p>Ingresa tu PIN para gestionar la carta.</p>
+    <div class="field">
+      <input id="loginPin" type="password" inputmode="numeric" maxlength="8" placeholder="••••"
+             autocomplete="off" onkeydown="if(event.key==='Enter')submitLogin()">
+    </div>
+    <div class="login-err" id="loginErr">PIN incorrecto</div>
+    <button class="wa" onclick="submitLogin()">Ingresar</button>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -550,18 +647,43 @@ document.getElementById("menu").addEventListener("click", e=>{
   refreshCart();
 });
 
+const ADMIN_PIN = "1234";
+
 function toggleAdminMode(){
-  if(!document.body.classList.contains("admin-mode")){
-    const pin = prompt("Ingresa el PIN de Administrador (por defecto: 1234):");
-    if(pin === "1234"){
-      document.body.classList.add("admin-mode");
-      toast("Modo Administrador activado");
-    } else if(pin !== null) {
-      alert("PIN incorrecto.");
-    }
-  } else {
+  if(document.body.classList.contains("admin-mode")){
     document.body.classList.remove("admin-mode");
     toast("Modo Administrador desactivado");
+  } else {
+    openLogin();
+  }
+}
+
+function openLogin(){
+  const ov = document.getElementById("loginOverlay");
+  const pin = document.getElementById("loginPin");
+  const err = document.getElementById("loginErr");
+  pin.value = ""; pin.classList.remove("err"); err.classList.remove("show");
+  ov.classList.add("open");
+  document.body.style.overflow = "hidden";
+  setTimeout(()=>pin.focus(), 120);
+}
+
+function closeLogin(){
+  document.getElementById("loginOverlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function submitLogin(){
+  const pin = document.getElementById("loginPin");
+  const err = document.getElementById("loginErr");
+  if(pin.value === ADMIN_PIN){
+    closeLogin();
+    document.body.classList.add("admin-mode");
+    toast("Modo Administrador activado");
+  } else {
+    pin.classList.remove("err"); void pin.offsetWidth; pin.classList.add("err");
+    err.classList.add("show");
+    pin.select();
   }
 }
 
@@ -804,7 +926,28 @@ function toast(txt){
   clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove("show"), 1600);
 }
 
-document.addEventListener("keydown", e => { if(e.key==="Escape") closeDrawer(); });
+document.addEventListener("keydown", e => { if(e.key==="Escape"){ closeDrawer(); closeLogin(); } });
+
+/* Título deslizante en la pestaña cuando el usuario se cambia a otra pestaña */
+(function tabTitleMarquee(){
+  const original = document.title;
+  const scrolling = "🍣 Yutori Sushi — ¡Te esperamos! · ";
+  let text = scrolling, timer = null;
+  function tick(){
+    text = text.substring(1) + text.substring(0,1);
+    document.title = text;
+  }
+  document.addEventListener("visibilitychange", ()=>{
+    if(document.hidden){
+      text = scrolling;
+      clearInterval(timer);
+      timer = setInterval(tick, 320);
+    } else {
+      clearInterval(timer); timer = null;
+      document.title = original;
+    }
+  });
+})();
 </script>
 </body>
 </html>
