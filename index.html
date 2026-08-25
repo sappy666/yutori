@@ -1121,7 +1121,7 @@ document.addEventListener("keydown", e => { if(e.key==="Escape"){ closeDrawer();
 /* Título deslizante en la pestaña cuando el usuario se cambia a otra pestaña */
 (function tabTitleMarquee(){
   const original = document.title;
-  const scrolling = "Yutori Sushi 🍣 — Viña";
+  const scrolling = "Yutori Sushi 🍣 — Viña ";
   let text = scrolling, timer = null;
   function tick(){
     text = text.substring(1) + text.substring(0,1);
