@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yutori Sushi — Carta y pedidos</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg fill='%23D40F1C' version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 339.137 339.137'><path d='M253.552,171.218c3.193-0.827,5.809-4.206,5.809-7.505V35.902c0-3.3-1.502-3.756-3.337-1.014L149.46,194.096 c-1.835,2.742-0.724,4.31,2.47,3.479L253.552,171.218z'/><path d='M66.532,306.042c-3.3,0-4.313-2.107-2.251-4.686l67.972-84.935c2.062-2.576,6.373-5.319,9.581-6.098l193.599-46.882 c3.208-0.776,4.602,0.991,3.099,3.929l-68.245,133.328c-1.503,2.938-5.435,5.341-8.733,5.341L66.532,306.042L66.532,306.042z'/><path d='M56.92,147.687c-3.3,0-6.01,2.7-6.021,6l-0.52,145.033c-0.012,3.301,1.672,3.897,3.741,1.327l72.128-89.58 c2.069-2.569,3.033-7.272,2.141-10.449l-13.066-46.554c-0.892-3.177-4.322-5.776-7.622-5.776H56.92L56.92,147.687z'/><path d='M86.309,41.614c-0.892-3.177-3.365-3.715-5.496-1.195l-79.677,94.21c-2.131,2.52-1.174,4.581,2.125,4.581h104.441 c3.3,0,5.271-2.6,4.378-5.776L86.309,41.614z'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0c; --surface:#141416; --surface-2:#1b1b1f;
+    --red:#ff2130; --red-d:#d40f1c; --red-glow:rgba(255,33,48,.35);
+    --text:#f4f2ee; --muted:#9c988f; --line:#2a2a30;
+    --shadow:0 24px 60px -24px rgba(0,0,0,.8); --radius:14px;
+    --serif:"Zen Old Mincho",Georgia,serif; --sans:"Zen Kaku Gothic New",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);color:var(--text);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{max-width:100%;display:block}
+  a, a:hover, a:focus, a:active, a:visited{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  ::selection{background:var(--red);color:#fff}
+  :focus-visible{outline:2px solid var(--red);outline-offset:3px;border-radius:4px}
+
+  @keyframes heroFadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.08); opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 1; transform: translateY(0);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .js-ready .reveal { opacity: 0; transform: translateY(40px); }
+  .js-ready .reveal.active { opacity: 1; transform: translateY(0); }
+
+  header {
+    position:sticky;top:0;z-index:60;background:rgba(10,10,12,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+    animation: heroFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) ease-out;
+  }
+  .bar{max-width:1120px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+  .brand .mark{font-family:var(--serif);font-weight:900;font-size:1.55rem;letter-spacing:.02em}
+  .brand .mark span{color:var(--red)}
+  .brand .kana{font-family:var(--serif);color:var(--red);font-size:1.05rem;opacity:.9}
+  
+  .header-actions { display: flex; gap: 10px; align-items: center; }
+  .cart-btn, .admin-toggle-btn{display:flex;align-items:center;gap:9px;background:var(--red);color:#fff;padding:10px 17px;border-radius:999px;font-weight:700;font-size:.9rem;transition:transform .15s, box-shadow .25s, background .2s}
+  .admin-toggle-btn { background: var(--surface-2); border: 1.5px solid var(--line); color: var(--muted); }
+  .admin-toggle-btn:hover { border-color: var(--red); color: var(--text); }
+  .cart-btn:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 8px 24px -6px var(--red-glow)}
+  .cart-btn .count{background:#fff;color:var(--red);font-size:.75rem;font-weight:900;min-width:20px;height:20px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero::before{
+    content:"";position:absolute;top:-30%;right:-10%;width:60vw;height:60vw;
+    background:radial-gradient(circle,var(--red-glow),transparent 62%);
+    filter:blur(20px);pointer-events:none; animation: pulseGlow 6s infinite ease-in-out;
+  }
+  .hero-inner{
+    max-width:1120px;margin:0 auto;padding:80px 20px 78px;position:relative;z-index:2;
+    display:grid;grid-template-columns:1.5fr .5fr;gap:20px;align-items:center;
+    animation: heroFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  }
+  .eyebrow{display:inline-block;font-size:.74rem;letter-spacing:.34em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:22px;border:1px solid var(--red);padding:6px 12px;border-radius:999px}
+  .hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.5rem,7vw,4.8rem);line-height:1.05;letter-spacing:-.015em;margin-bottom:22px}
+  .hero h1 em{font-style:normal;color:var(--red);text-shadow:0 0 40px var(--red-glow)}
+  .hero p{max-width:48ch;color:#c9c5bc;font-size:1.06rem;margin-bottom:32px}
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 28px;border-radius:999px;font-weight:700;font-size:.95rem;text-decoration:none;transition:transform .15s, filter .2s, box-shadow .25s, background .2s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-red{background:var(--red);color:#fff;box-shadow:0 10px 30px -10px var(--red-glow)}
+  .btn-red:hover{background:var(--red-d);box-shadow:0 14px 36px -10px var(--red-glow)}
+  .btn-ghost{border:1.5px solid var(--line);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--red);color:var(--red)}
+  .kana-vert{justify-self:end;align-self:center;font-family:var(--serif);font-weight:900;writing-mode:vertical-rl;font-size:clamp(4rem,12vw,9rem);line-height:1;user-select:none;letter-spacing:.08em;color:transparent;-webkit-text-stroke:2px var(--red);text-shadow:0 0 60px var(--red-glow);opacity:.9}
+  .hero-strip{
+    max-width:1120px;margin:0 auto;padding:20px 20px 26px;position:relative;z-index:2;
+    display:flex;gap:26px;flex-wrap:wrap;border-top:1px solid var(--line);color:var(--muted);font-size:.86rem;
+  }
+  .hero-strip b{color:var(--text);font-weight:700}
+  .hero-strip .dot{color:var(--red)}
+
+  .menu-wrap{max-width:1120px;margin:0 auto;padding:60px 20px 40px}
+  .section-head .eyebrow{border:none;padding:0;margin-bottom:12px}
+  .section-head h2{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,4.5vw,3rem);letter-spacing:-.01em}
+  .section-head p{color:var(--muted);max-width:52ch;margin-top:8px}
+
+  .cats{position:sticky;top:63px;z-index:40;display:flex;gap:8px;overflow-x:auto;padding:16px 0;margin:22px 0 8px;background:linear-gradient(var(--bg) 68%,transparent);scrollbar-width:none}
+  .cats::-webkit-scrollbar{display:none}
+  .cat{white-space:nowrap;padding:9px 17px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:500;font-size:.88rem;color:var(--muted);transition:.18s;text-decoration:none}
+  .cat:hover{border-color:var(--red);color:var(--text);text-decoration:none}
+  .cat.active{background:var(--red);color:#fff;border-color:var(--red)}
+
+  .cat-block{padding-top:28px;scroll-margin-top:132px}
+  .cat-title{font-family:var(--serif);font-size:1.4rem;font-weight:700;display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .cat-title::before{content:"";width:14px;height:14px;background:var(--red);border-radius:3px;transform:rotate(45deg);flex:none}
+  .cat-title::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:8px;overflow:hidden;transition:border-color .2s, transform .2s, box-shadow .25s}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red);transform:scaleY(0);transform-origin:top;transition:transform .25s}
+  .card:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:0 20px 40px -24px var(--red-glow)}
+  .card:hover::before{transform:scaleY(1)}
+  .card .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+  .card h3{font-size:1.03rem;font-weight:700;line-height:1.25}
+  .card .price{font-family:var(--serif);font-weight:900;color:var(--red);white-space:nowrap;font-size:1.1rem}
+  .card .desc{color:var(--muted);font-size:.88rem;flex:1}
+  
+  .card-actions { display: flex; gap: 8px; margin-top: 6px; }
+  .add{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:transparent;border:1.5px solid var(--red);color:var(--red);border-radius:999px;padding:8px 16px;font-weight:700;font-size:.85rem;transition:.18s}
+  .add:hover{background:var(--red);color:#fff}
+  .add.added{background:#1f7a3d;border-color:#1f7a3d;color:#fff}
+
+  .admin-card-btn {
+    background: var(--surface-2); border: 1px solid var(--line); color: var(--muted);
+    padding: 8px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; display: none;
+    align-items: center; justify-content: center; gap: 4px; transition: 0.15s;
+  }
+  body.admin-mode .admin-card-btn { display: inline-flex; }
+  .admin-card-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+  .admin-card-btn.del:hover { background: #b30000; border-color: #b30000; }
+
+  footer{background:#050506;border-top:1px solid var(--line);margin-top:44px}
+  .foot{max-width:1120px;margin:0 auto;padding:52px 20px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:28px}
+  .foot h4{font-family:var(--serif);color:var(--text);font-size:1.4rem;margin-bottom:10px}
+  .foot h4 .kana{color:var(--red)}
+  .foot p{color:var(--muted)}
+  .foot a{color:var(--muted);text-decoration:none;display:block;padding:3px 0;transition:.15s}
+  .foot a:hover{color:var(--red);text-decoration:none}
+  .foot .lbl{color:var(--text);font-weight:700;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
+  .foot-bottom{border-top:1px solid var(--line);text-align:center;padding:18px;font-size:.8rem;color:#6b675f}
+  .foot-bottom .kana{color:var(--red)}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.66);opacity:0;visibility:hidden;transition:.25s;z-index:90}
+  .overlay.open{opacity:1;visibility:visible}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(430px,100%);background:var(--surface);z-index:100;display:flex;flex-direction:column;border-left:1px solid var(--line);transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:var(--shadow)}
+  .drawer.open{transform:translateX(0)}
+  .drawer-head{padding:20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .drawer-head h3{font-family:var(--serif);font-size:1.4rem}
+  .drawer-head h3 .kana{color:var(--red)}
+  .close{font-size:1.5rem;width:40px;height:40px;border-radius:50%;color:var(--muted);transition:.15s}
+  .close:hover{background:var(--surface-2);color:var(--text)}
+  .drawer-body{flex:1;overflow-y:auto;padding:16px 20px}
+  .empty{text-align:center;color:var(--muted);padding:56px 20px}
+  .empty .kana{font-family:var(--serif);font-size:3rem;color:var(--line);display:block;margin-bottom:10px}
+
+  .line{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .line .info{flex:1}
+  .line .info h4{font-size:.95rem;font-weight:700;line-height:1.2}
+  .line .info .unit{color:var(--muted);font-size:.8rem}
+  .line .right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  .line .lp{font-family:var(--serif);font-weight:900;color:var(--red)}
+  .qty{display:flex;align-items:center;gap:2px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:2px}
+  .qty button{width:26px;height:26px;border-radius:50%;font-size:1.1rem;font-weight:700;color:var(--red);line-height:1;transition:.12s}
+  .qty button:hover{background:var(--red);color:#fff}
+  .qty span{min-width:22px;text-align:center;font-weight:700;font-size:.9rem}
+
+  .fields{padding:6px 0 2px}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .field input, .field textarea, .field select{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);font-family:inherit;font-size:.92rem;color:var(--text);transition:.15s}
+  .field input::placeholder,.field textarea::placeholder{color:#5f5c55}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--red)}
+  .field textarea{resize:vertical;min-height:56px}
+
+  .drawer-foot{padding:18px 20px;border-top:1px solid var(--line);background:var(--surface-2)}
+  .totals{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+  .totals .t-lbl{font-weight:500;color:var(--muted)}
+  .totals .t-val{font-family:var(--serif);font-weight:900;font-size:1.8rem;color:var(--red)}
+  .wa{width:100%;background:var(--red);color:#fff;padding:15px;border-radius:12px;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:10px;transition:.15s;box-shadow:0 10px 30px -12px var(--red-glow)}
+  .wa:hover{background:var(--red-d);transform:translateY(-1px)}
+  .wa:disabled{background:var(--surface);color:#5f5c55;cursor:not-allowed;transform:none;box-shadow:none;border:1px solid var(--line)}
+  .wa-note{text-align:center;font-size:.76rem;color:var(--muted);margin-top:9px}
+
+  .admin-bar {
+    position: fixed; bottom: 20px; right: 20px; z-index: 80;
+    background: var(--surface); border: 2px solid var(--red); padding: 12px 18px;
+    border-radius: 999px; box-shadow: var(--shadow); display: none; align-items: center; gap: 12px;
+  }
+  body.admin-mode .admin-bar { display: flex; }
+  .admin-bar span { font-weight: 700; font-size: 0.85rem; color: var(--red); }
+
+  @media(max-width:560px){
+    .hero-inner{grid-template-columns:1fr;padding:56px 20px 56px}
+    .kana-vert{display:none}
+    .drawer{width:100%;height:92%;top:auto;bottom:0;border-radius:22px 22px 0 0;border-left:none;border-top:1px solid var(--line);transform:translateY(100%)}
+    .drawer.open{transform:translateY(0)}
+    .foot{grid-template-columns:1fr;gap:22px}
+    .brand .mark{font-size:1.35rem}
+  }
+  @media(max-width:820px){.foot{grid-template-columns:1fr 1fr}}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120%);background:var(--red);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:200;transition:transform .3s;box-shadow:0 12px 30px -10px var(--red-glow)}
+  .toast.show{transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <a class="brand" href="#top">
+      <span class="mark">Yut<span>o</span>ri</span>
+      <span class="kana">ゆとり</span>
+    </a>
+    <div class="header-actions">
+      <button class="admin-toggle-btn" onclick="toggleAdminMode()" title="Modo Administrador">⚙️ Admin</button>
+      <button class="cart-btn" onclick="openCart()" aria-label="Ver carrito">
+        <span>Mi pedido</span>
+        <span class="count" id="hdrCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow">El Arte del Sushi & Fusión Nikkei</div>
+        <h1>Sabor, Creatividad y Pasión en <em>cada Bocado</em>.</h1>
+        <p>Rolls preparados al momento con ingredientes frescos. Haz tu pedido y retíralo directamente en nuestro local.</p>
+        <div class="hero-cta">
+          <a class="btn btn-red" href="#carta">Ver la carta</a>
+          <a class="btn btn-ghost" href="https://www.instagram.com/yutori_sushi_food/" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+      <div class="kana-vert" aria-hidden="true">ゆとり</div>
+    </div>
+    <div class="hero-strip">
+      <span><span class="dot">&#9679;</span> <b>Ubicación</b> Etchevers 210, dpto 301, Viña del Mar (Solo para llevar)</span>
+      <span><span class="dot">&#9679;</span> <b>Horario</b> Mar a Dom &middot; 18:00&ndash;23:00</span>
+      <span><span class="dot">&#9679;</span> <b>Pedidos</b> por WhatsApp</span>
+    </div>
+  </section>
+
+  <section class="menu-wrap reveal" id="carta">
+    <div class="section-head">
+      <div class="eyebrow">Nuestra carta</div>
+      <h2>Elige tus favoritos</h2>
+      <p>Toca «Agregar» en cada plato. Revisa tu pedido cuando quieras desde «Mi pedido».</p>
+    </div>
+    <nav class="cats" id="cats"></nav>
+    <div id="menu"></div>
+  </section>
+</main>
+
+<div class="admin-bar" id="adminBar">
+  <span>🛠️ Modo Admin Activo</span>
+  <button class="btn btn-red" style="padding: 8px 16px; font-size: 0.85rem;" onclick="openProductModal()">＋ Nuevo Producto</button>
+  <button class="btn btn-ghost" style="padding: 8px 16px; font-size: 0.85rem;" onclick="openCategoryModal()">＋ Nueva Categoría</button>
+  <button class="btn btn-ghost" style="padding: 8px 16px; font-size: 0.85rem; border-color:var(--red); color:var(--red);" onclick="toggleAdminMode()">Salir</button>
+</div>
+
+<footer class="reveal">
+  <div class="foot">
+    <div>
+      <h4>Yutori <span class="kana">ゆとり</span></h4>
+      <p style="max-width:32ch">El Arte del Sushi & Fusión Nikkei. Sabor, Creatividad y Pasión en cada Bocado.</p>
+    </div>
+    <div>
+      <div class="lbl">Ubicación</div>
+      <p style="font-size:.9rem; color:var(--muted)">Etchevers 210, dpto 301<br>Viña del Mar, Chile 2520000<br><b style="color:var(--text)">(Solo para llevar)</b></p>
+    </div>
+    <div>
+      <div class="lbl">Contacto</div>
+      <a href="https://wa.me/56942791623" target="_blank" rel="noopener">WhatsApp +56 9 4279 1623</a>
+      <a href="https://www.instagram.com/yutori_sushi_food/" target="_blank" rel="noopener">@yutori_sushi_food</a>
+    </div>
+    <div>
+      <div class="lbl">Horario</div>
+      <a style="cursor:default">Martes a Domingo</a>
+      <a style="cursor:default">18:00 – 23:00 hrs</a>
+    </div>
+  </div>
+  <div class="foot-bottom">© <span id="yr"></span> Yutori Sushi · Hecho con <span class="kana">ゆとり</span></div>
+</footer>
+
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+
+<aside class="drawer" id="drawer" aria-label="Panel lateral">
+  <div class="drawer-head">
+    <h3 id="drawerTitle">Mi pedido</h3>
+    <button class="close" onclick="closeDrawer()" aria-label="Cerrar">×</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot" style="display:none">
+    <div class="totals">
+      <span class="t-lbl">Total</span>
+      <span class="t-val" id="total">$0</span>
+    </div>
+    <button class="wa" id="waBtn" onclick="sendWhatsApp()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5 4.5.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 2a10 10 0 0 0-8.6 15L2 22l5.1-1.3A10 10 0 1 0 12 2m0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2"/></svg>
+      Enviar pedido por WhatsApp
+    </button>
+    <p class="wa-note">Se abrirá WhatsApp con tu pedido listo para enviar.</p>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_MENU = [
+  { cat:"Combinaciones", items:[
+    { n:"24 Piezas", d:"10 Camarón furay, queso crema, cebollín (envuelto en palta) + 10 Pollo teriyaki, queso crema, cebollín (envuelto en panko) + 2 Niguiri de Salmón + 2 Niguiri de Palta", p:14990 },
+    { n:"36 Piezas", d:"10 Camarón furay, queso crema, cebollín (envuelto en panko) + 10 Pollo teriyaki, palta, pimentón (envuelto en panko) + 10 Kanikama, queso crema, palta (envuelto en panko) + 6 Tori balls", p:18990 },
+    { n:"30 Piezas Sin Arroz", d:"10 Salmón/camarón furay, queso crema, cebollín (envuelto en palta) + 10 Pollo teriyaki, palta, pimentón, cebollín (envuelto en queso crema) + 10 Salmón/camarón furay, queso crema, cebollín (envuelto en panko)", p:19990 },
+    { n:"40 Piezas Vegetariana", d:"10 Aceituna, queso crema, palta (envuelto en sésamo) + 10 Palmito, queso crema, pimentón (envuelto en palta) + 10 Pimentón, queso crema, cebollín (envuelto en panko) + 10 Palta, queso crema, cebollín (envuelto en panko)", p:15990 },
+    { n:"46 Piezas", d:"10 Kanikama, queso crema, palta (sésamo) + 10 Camarón furay, queso crema, cebollín (palta) + 10 Camarón furay, queso crema, cebollín (panko) + 10 Pollo teriyaki, queso crema, cebollín (panko) + 6 Korokes", p:19990 },
+    { n:"50.A Piezas", d:"10 Salmón, queso crema, palta (sésamo) + 10 Camarón furay, queso crema, cebollín (palta) + 10 Pollo teriyaki, queso crema, cebollín (panko) + 2 Niguiri de palta + 2 Niguiri de salmón + 5 Korokes + 5 Gyosas + 3 Pollo furay + 3 Camarón furay", p:24990 },
+    { n:"50.B Piezas", d:"10 Salmón, queso crema, palta (sésamo) + 10 Camarón furay, queso crema, cebollín (panko) + 10 Pollo teriyaki, queso crema, cebollín (palta) + 10 Pollo teriyaki, palta, pimentón (queso crema) + 10 Pollo, queso crema, cebollín (panko)", p:23990 },
+    { n:"60 Piezas", d:"10 Salmón, queso crema, palta (sésamo) + 10 Camarón furay, queso crema, cebollín (panko) + 10 Pollo teriyaki, queso crema, cebollín (palta) + 10 Aceituna, queso crema, palta (panko) + 10 Pollo, pimentón, palta (panko) + 10 Palta, queso crema (nori)", p:25990 },
+  ]},
+  { cat:"Colaciones", items:[
+    { n:"Colación 1", d:"10 Pollo teriyaki, queso crema, cebollín (envuelto en panko) + 3 Tori balls. Incluye 2 salsas Soya o Teriyaki.", p:5990 },
+    { n:"Colación 2", d:"5 Pollo teriyaki, queso crema, cebollín (panko) + 5 Kanikama, queso crema, palta (sésamo) + 5 Camarón furay, queso crema, cebollín (palta). Incluye 2 salsas Soya o Teriyaki.", p:5990 },
+    { n:"Colación 3", d:"10 Pimentón, queso crema, cebollín (envuelto en panko) + 10 Aceituna, queso crema, palta (envuelto en sésamo). Incluye 2 salsas Soya o Teriyaki.", p:5990 },
+  ]},
+  { cat:"Avocado Rolls", items:[
+    { n:"1. Camarón, queso crema, cebollín", d:"Envuelto en palta.", p:4600 },
+    { n:"2. Pollo teriyaki, queso crema", d:"Envuelto en palta.", p:4300 },
+    { n:"3. Pollo teriyaki, queso crema, cebollín", d:"Envuelto en palta.", p:4500 },
+    { n:"4. Pollo furay, queso crema, almendras tostadas", d:"Envuelto en palta.", p:4800 },
+    { n:"5. Camarón furay, queso crema", d:"Envuelto en palta.", p:4700 },
+    { n:"6. Salmón furay, queso crema, cebollín", d:"Envuelto en palta.", p:5100 },
+    { n:"7. Salmón, queso crema, camarón", d:"Envuelto en palta.", p:5500 },
+    { n:"8. Salmón, queso crema, palta", d:"Envuelto en palta.", p:5100 },
+    { n:"9. Champiñón, queso crema, pimentón", d:"Envuelto en palta.", p:4500 },
+  ]},
+  { cat:"Sake Rolls", items:[
+    { n:"10. Camarón furay, cebollín", d:"Envuelto en salmón.", p:5500 },
+    { n:"11. Palta, queso crema", d:"Envuelto en salmón.", p:5100 },
+    { n:"12. Camarón, queso crema, cebollín", d:"Envuelto en salmón.", p:5600 },
+    { n:"13. Camarón, palta, cebollín", d:"Envuelto en salmón.", p:5500 },
+    { n:"14. Salmón, queso crema, palta", d:"Envuelto en salmón.", p:5800 },
+    { n:"15. Camarón, queso crema, palta", d:"Envuelto en salmón.", p:5600 },
+  ]},
+  { cat:"Cheese Rolls", items:[
+    { n:"20. Pollo teriyaki, palta", d:"Envuelto en queso crema.", p:4300 },
+    { n:"21. Pollo teriyaki, palta, cebollín", d:"Envuelto en queso crema.", p:4800 },
+    { n:"22. Pimentón, palta, palmito", d:"Envuelto en queso crema.", p:4400 },
+    { n:"23. Camarón, palta, cebollín", d:"Envuelto en queso crema.", p:5600 },
+    { n:"24. Salmón, palta, cebollín", d:"Envuelto en queso crema.", p:5800 },
+    { n:"25. Salmón, palta, camarón", d:"Envuelto en queso crema.", p:5400 },
+    { n:"26. Pollo teriyaki, cebollín, almendras tostadas", d:"Envuelto en queso crema.", p:4600 },
+  ]},
+  { cat:"California Rolls", items:[
+    { n:"30. Pollo teriyaki, queso crema, palta", d:"Envuelto en sésamo o masago.", p:4100 },
+    { n:"31. Camarón furay, queso crema, palta", d:"Envuelto en sésamo o masago.", p:4400 },
+    { n:"32. Camarón, queso crema, cebollín", d:"Envuelto en sésamo o masago.", p:4100 },
+    { n:"33. Salmón, queso crema, palta", d:"Envuelto en sésamo o masago.", p:4500 },
+    { n:"34. Salmón, queso crema, camarón, cebollín", d:"Envuelto en sésamo o masago.", p:4800 },
+    { n:"35. Champiñón, queso crema, pimentón, almendras tostadas", d:"Envuelto en sésamo o masago.", p:4100 },
+  ]},
+  { cat:"Hot Rolls", items:[
+    { n:"40. Camarón, queso crema, cebollín", d:"Frito en panko.", p:4400 },
+    { n:"41. Pollo teriyaki, queso crema", d:"Frito en panko.", p:4100 },
+    { n:"42. Pollo teriyaki, queso crema, cebollín", d:"Frito en panko.", p:4200 },
+    { n:"43. Salmón, queso crema, palta", d:"Frito en panko.", p:4900 },
+    { n:"44. Salmón, queso crema, cebollín", d:"Frito en panko.", p:4500 },
+    { n:"45. Camarón merkén, queso crema, palta", d:"Frito en panko.", p:4600 },
+    { n:"46. Salmón, queso crema, camarón, cebollín", d:"Frito en panko.", p:5000 },
+    { n:"47. Champiñón, queso crema, pimentón, almendras tostadas", d:"Frito en panko.", p:4200 },
+  ]},
+  { cat:"Rolls Sin Arroz", items:[
+    { n:"50. Pollo teriyaki, queso crema, cebollín, pimentón", d:"Envuelto en palta.", p:5800 },
+    { n:"51. Salmón, camarón, queso crema, cebollín", d:"Envuelto en palta.", p:6400 },
+    { n:"52. Pollo teriyaki, queso crema, cebollín, palta", d:"Envuelto en panko.", p:5800 },
+    { n:"53. Pollo furay, palta, cebollín, pimentón", d:"Envuelto en queso crema.", p:5800 },
+    { n:"54. Camarón furay, palta, cebollín", d:"Envuelto en salmón.", p:6400 },
+    { n:"55. Salmón, queso crema, palta, pepino", d:"Envuelto en panko.", p:6400 },
+  ]},
+  { cat:"Rolls Nikkei", items:[
+    { n:"60. Nikkei Ceviche Salmón", d:"Camarón furay, queso crema, envuelto en palta con topping de ceviche de salmón.", p:8990 },
+    { n:"61. Nikkei Ceviche Mixto", d:"Palta, queso crema, envuelto en panko con topping de ceviche salmón/camarón.", p:8990 },
+    { n:"62. Nikkei Tartar Camarón", d:"Salmón, queso crema, cebollín, envuelto en palta con topping de tartar de camarón furay y salsa acevichada.", p:8990 },
+    { n:"63. Nikkei Tartar Salmón", d:"Palta, queso crema, envuelto en panko con topping de tartar de salmón.", p:8990 },
+    { n:"64. Nikkei Tarí Gratinado", d:"Camarón furay, queso crema, envuelto en panko con topping de salsa Tarí gratinada, salsa unagui y toques de ciboulette.", p:8490 },
+    { n:"65. Nikkei Oliva & Camote", d:"Pulpo, palta, queso crema, ciboulette, envuelto en palta con topping de salsa oliva y camote.", p:8490 },
+    { n:"66. Nikkei Arcoíris (Sin arroz)", d:"Camarón furay, queso crema, palta, envuelto en plaqueta arcoíris de salmón, queso crema, palta, sésamo, ciboulette, kakiage de camote con topping de salsa maracuyá.", p:8990 },
+    { n:"67. Nikkei Reina Pepiada", d:"Champiñón salteado, queso crema, ciboulette, envuelto en panko con topping de Reina pepiada (pollo, palta, mayonesa).", p:7990 },
+    { n:"68. Nikkei Salmón Flameado", d:"Salmón/camarón, queso crema, cebollín, envuelto en salmón flameado con salsa acevichada y toques de ciboulette.", p:8990 },
+    { n:"69. Nikkei Nori Panko", d:"Champiñón salteado/camarón, cilantro, queso crema, envuelto en nori en panko con topping de salsa Tarí.", p:7990 },
+    { n:"70. Nikkei Plátano Maduro", d:"Pollo tempura, queso crema, palta, envuelto en plátano maduro con topping de salsa maracuyá y camote en hilo.", p:7990 },
+  ]},
+  { cat:"Handrolls & Gohan", items:[
+    { n:"Handroll Pollo (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3200 },
+    { n:"Handroll Pollo (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3700 },
+    { n:"Handroll Camarón (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3700 },
+    { n:"Handroll Camarón (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:4200 },
+    { n:"Handroll Salmón (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:4200 },
+    { n:"Handroll Salmón (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:4700 },
+    { n:"Handroll Kanikama (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3200 },
+    { n:"Handroll Kanikama (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3700 },
+    { n:"Handroll Vegetariano (Frío)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3200 },
+    { n:"Handroll Vegetariano (Frito)", d:"Base de arroz, queso crema y cebollín + 1 salsa.", p:3700 },
+    { n:"Gohan Pollo Furay", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:5990 },
+    { n:"Gohan Camarón Furay", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:6990 },
+    { n:"Gohan Salmón", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:7490 },
+    { n:"Gohan Acevichado", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:7990 },
+    { n:"Gohan Vegetariano", d:"Base de arroz o lechuga, queso crema, cebollín y palta. Incluye 2 salsas.", p:5990 },
+  ]},
+  { cat:"Ceviche & Sashimi", items:[
+    { n:"Sashimi Salmón (6 piezas)", d:"Finos cortes de salmón crudo.", p:6000 },
+    { n:"Ceviche de Salmón", d:"Salmón fresco, cebolla morada, choclo peruano, pimentón, cilantro y kakiage de camote, bañado en leche de tigre yutori.", p:7990 },
+    { n:"Ceviche de Salmón / Camarón", d:"Salmón fresco, camarón ecuatoriano, cebolla morada, pimentón, choclo peruano, cilantro y kakiage de camote, bañado en leche de tigre yutori.", p:7990 },
+    { n:"Ceviche de Champiñón / Mango", d:"Champiñón fresco, cebolla morada, choclo peruano, mango, pimentón, cilantro y kakiage de camote, bañado en leche de tigre yutori.", p:7990 },
+    { n:"Ceviche Yutori", d:"Salmón fresco, camarón ecuatoriano, pulpo, reineta, cebolla morada, pimentón, choclo peruano, cilantro, kakiage de camote, bañado en leche de tigre yutori.", p:9990 },
+  ]},
+  { cat:"Cocina Caliente", items:[
+    { n:"Arrollados Primavera (3u)", d:"Crujientes arrollados de verdura + 1 salsa.", p:2000 },
+    { n:"Arrollados Primavera (6u)", d:"Crujientes arrollados de verdura + 1 salsa.", p:3000 },
+    { n:"Korokes (6u)", d:"Bolitas de arroz con queso crema apanadas en panko.", p:2500 },
+    { n:"Tori Balls (6u)", d:"Bolitas de pollo con queso crema apanadas en panko.", p:4990 },
+    { n:"Pollo Furay (6u)", d:"Trozos apanados en panko.", p:4000 },
+    { n:"Camarón Furay (6u)", d:"Camarones apanados en panko.", p:4600 },
+    { n:"Salmón Furay (6u)", d:"Cortes de salmón apanados en panko.", p:6000 },
+    { n:"Zucchini Furay (6u)", d:"Zucchini apanado en panko.", p:4000 },
+    { n:"Gyosas Pollo (6u)", d:"Empanadas japonesas.", p:3500 },
+    { n:"Gyosas Camarón (6u)", d:"Empanadas japonesas.", p:3500 },
+    { n:"Gyosas Cerdo (6u)", d:"Empanadas japonesas.", p:3500 },
+    { n:"Gyosas Vegetal (6u)", d:"Empanadas japonesas.", p:3500 },
+  ]},
+  { cat:"Bebidas & Salsas", items:[
+    { n:"Coca-Cola Original 350cc", d:"Lata.", p:1200 },
+    { n:"Coca-Cola Zero 350cc", d:"Lata.", p:1200 },
+    { n:"Fanta 350cc", d:"Lata.", p:1200 },
+    { n:"Sprite 350cc", d:"Lata.", p:1200 },
+    { n:"Agua sin gas", d:"Botella.", p:1200 },
+    { n:"Agua con gas", d:"Botella.", p:1200 },
+    { n:"Salsa de Soya", d:"Porción adicional.", p:700 },
+    { n:"Salsa Teriyaki", d:"Porción adicional.", p:1000 },
+    { n:"Salsa Spicy", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Acevichada", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Tarí", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Oliva", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Honey Mustard", d:"Porción adicional.", p:1500 },
+    { n:"Salsa Maracuyá", d:"Porción adicional.", p:1500 },
+  ]}
+];
+
+// Limpiamos el almacenamiento local obsoleto para forzar el uso del menú completo por defecto
+let savedMenu = localStorage.getItem("yutori_menu");
+let MENU = savedMenu ? JSON.parse(savedMenu) : DEFAULT_MENU;
+
+// Si por alguna razón el menú guardado estaba vacío, reasignamos el completo
+if(!MENU || MENU.length === 0) {
+  MENU = DEFAULT_MENU;
+}
+
+const WA_NUMBER = "56942791623";
+const clp = n => "$" + Number(n).toLocaleString("es-CL");
+const idMap = new Map();
+const cart = new Map();
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+function slug(s){
+  return s.toLowerCase().replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i').replace(/ó/g,'o').replace(/ú/g,'u').replace(/ñ/g,'n').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+function saveMenu(){
+  localStorage.setItem("yutori_menu", JSON.stringify(MENU));
+  renderMenu();
+}
+
+function renderMenu(){
+  const menuEl = document.getElementById("menu");
+  const catsEl = document.getElementById("cats");
+  menuEl.innerHTML = "";
+  catsEl.innerHTML = "";
+  idMap.clear();
+  let globalId = 0;
+
+  MENU.forEach((catObj, catIndex) => {
+    const cid = slug(catObj.cat);
+    const chip = document.createElement("a");
+    chip.className = "cat"; chip.href = "#"+cid; chip.textContent = catObj.cat; chip.dataset.target = cid;
+    catsEl.appendChild(chip);
+
+    const block = document.createElement("div");
+    block.className = "cat-block reveal active"; block.id = cid;
+    block.innerHTML = `<div class="cat-title">${catObj.cat}</div>`;
+    const grid = document.createElement("div"); grid.className = "grid";
+
+    catObj.items.forEach((it, itemIndex) => {
+      const uid = "i" + (globalId++);
+      idMap.set(uid, { item: it, catIndex, itemIndex });
+      
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="top">
+          <h3>${it.n}</h3>
+          <span class="price">${clp(it.p)}</span>
+        </div>
+        <p class="desc">${it.d||""}</p>
+        <div class="card-actions">
+          <button class="add" data-uid="${uid}">＋ Agregar</button>
+          <button class="admin-card-btn" onclick="openEditProductModal(${catIndex}, ${itemIndex})">✏️ Editar</button>
+          <button class="admin-card-btn del" onclick="deleteProduct(${catIndex}, ${itemIndex})">🗑️</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+    block.appendChild(grid);
+    menuEl.appendChild(block);
+  });
+}
+
+document.documentElement.classList.add('js-ready');
+renderMenu();
+
+document.getElementById("menu").addEventListener("click", e=>{
+  const btn = e.target.closest(".add");
+  if(!btn) return;
+  const uid = btn.dataset.uid;
+  const data = idMap.get(uid);
+  if(!data) return;
+  
+  cart.set(uid, (cart.get(uid)||0)+1);
+  btn.classList.add("added"); btn.textContent="✓ Agregado";
+  setTimeout(()=>{btn.classList.remove("added");btn.textContent="＋ Agregar";},900);
+  toast(`${data.item.n} agregado`);
+  refreshCart();
+});
+
+function toggleAdminMode(){
+  if(!document.body.classList.contains("admin-mode")){
+    const pin = prompt("Ingresa el PIN de Administrador (por defecto: 1234):");
+    if(pin === "1234"){
+      document.body.classList.add("admin-mode");
+      toast("Modo Administrador activado");
+    } else if(pin !== null) {
+      alert("PIN incorrecto.");
+    }
+  } else {
+    document.body.classList.remove("admin-mode");
+    toast("Modo Administrador desactivado");
+  }
+}
+
+function openDrawerContainer(title){
+  document.getElementById("drawerTitle").innerHTML = title;
+  document.getElementById("drawer").classList.add("open");
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeDrawer(){
+  document.getElementById("drawer").classList.remove("open");
+  document.getElementById("overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function openCategoryModal(){
+  openDrawerContainer('Nueva Categoría <span class="kana">カテゴリ</span>');
+  const body = document.getElementById("drawerBody");
+  document.getElementById("drawerFoot").style.display = "none";
+  
+  body.innerHTML = `
+    <div class="fields">
+      <div class="field">
+        <label>Nombre de la Categoría</label>
+        <input id="newCatName" type="text" placeholder="Ej: Promociones Especiales">
+      </div>
+      <button class="wa" style="margin-top:16px;" onclick="saveNewCategory()">Guardar Categoría</button>
+    </div>`;
+}
+
+function saveNewCategory(){
+  const name = document.getElementById("newCatName").value.trim();
+  if(!name) { alert("Escribe un nombre para la categoría."); return; }
+  MENU.push({ cat: name, items: [] });
+  saveMenu();
+  closeDrawer();
+  toast("Categoría agregada con éxito");
+}
+
+function openProductModal(){
+  if(MENU.length === 0){ alert("Primero debes crear una categoría."); return; }
+  openDrawerContainer('Nuevo Producto <span class="kana">商品</span>');
+  const body = document.getElementById("drawerBody");
+  document.getElementById("drawerFoot").style.display = "none";
+
+  let catOptions = MENU.map((c, idx) => `<option value="${idx}">${c.cat}</option>`).join("");
+
+  body.innerHTML = `
+    <div class="fields">
+      <div class="field">
+        <label>Categoría</label>
+        <select id="pCat">${catOptions}</select>
+      </div>
+      <div class="field">
+        <label>Nombre del Plato / Producto</label>
+        <input id="pName" type="text" placeholder="Ej: Roll Especial Yutori">
+      </div>
+      <div class="field">
+        <label>Precio (CLP)</label>
+        <input id="pPrice" type="number" placeholder="Ej: 5990">
+      </div>
+      <div class="field">
+        <label>Descripción / Ingredientes</label>
+        <textarea id="pDesc" placeholder="Ej: Salmón, palta, queso crema..."></textarea>
+      </div>
+      <button class="wa" style="margin-top:16px;" onclick="saveNewProduct()">Agregar Producto</button>
+    </div>`;
+}
+
+function saveNewProduct(){
+  const catIdx = parseInt(document.getElementById("pCat").value);
+  const n = document.getElementById("pName").value.trim();
+  const p = parseInt(document.getElementById("pPrice").value);
+  const d = document.getElementById("pDesc").value.trim();
+
+  if(!n || isNaN(p)){ alert("Completa al menos el nombre y un precio válido."); return; }
+  
+  MENU[catIdx].items.push({ n, d, p });
+  saveMenu();
+  closeDrawer();
+  toast("Producto creado con éxito");
+}
+
+function openEditProductModal(catIndex, itemIndex){
+  const it = MENU[catIndex].items[itemIndex];
+  openDrawerContainer('Editar Producto <span class="kana">編集</span>');
+  const body = document.getElementById("drawerBody");
+  document.getElementById("drawerFoot").style.display = "none";
+
+  let catOptions = MENU.map((c, idx) => `<option value="${idx}" ${idx===catIndex?'selected':''}>${c.cat}</option>`).join("");
+
+  body.innerHTML = `
+    <div class="fields">
+      <div class="field">
+        <label>Categoría</label>
+        <select id="eCat">${catOptions}</select>
+      </div>
+      <div class="field">
+        <label>Nombre</label>
+        <input id="eName" type="text" value="${it.n}">
+      </div>
+      <div class="field">
+        <label>Precio (CLP)</label>
+        <input id="ePrice" type="number" value="${it.p}">
+      </div>
+      <div class="field">
+        <label>Descripción</label>
+        <textarea id="eDesc">${it.d || ""}</textarea>
+      </div>
+      <button class="wa" style="margin-top:16px;" onclick="updateProduct(${catIndex}, ${itemIndex})">Guardar Cambios</button>
+    </div>`;
+}
+
+function updateProduct(oldCatIdx, itemIdx){
+  const newCatIdx = parseInt(document.getElementById("eCat").value);
+  const n = document.getElementById("eName").value.trim();
+  const p = parseInt(document.getElementById("ePrice").value);
+  const d = document.getElementById("eDesc").value.trim();
+
+  if(!n || isNaN(p)){ alert("Completa al menos el nombre y un precio válido."); return; }
+
+  const itemObj = { n, d, p };
+
+  if(oldCatIdx === newCatIdx){
+    MENU[oldCatIdx].items[itemIdx] = itemObj;
+  } else {
+    MENU[oldCatIdx].items.splice(itemIdx, 1);
+    MENU[newCatIdx].items.push(itemObj);
+  }
+
+  saveMenu();
+  closeDrawer();
+  toast("Producto actualizado");
+}
+
+function deleteProduct(catIndex, itemIndex){
+  if(confirm("¿Estás seguro de eliminar este producto?")){
+    MENU[catIndex].items.splice(itemIndex, 1);
+    saveMenu();
+    toast("Producto eliminado");
+  }
+}
+
+function openCart(){
+  openDrawerContainer('Mi pedido <span class="kana">注文</span>');
+  refreshCart();
+}
+
+function refreshCart(){
+  const count = [...cart.values()].reduce((a,b)=>a+b,0);
+  document.getElementById("hdrCount").textContent = count;
+  const body = document.getElementById("drawerBody");
+  const foot = document.getElementById("drawerFoot");
+
+  if(cart.size===0){
+    foot.style.display="none";
+    body.innerHTML=`<div class="empty"><span class="kana">空</span>Tu pedido está vacío.<br>Agrega algo rico de la carta.</div>`;
+    return;
+  }
+  foot.style.display="block";
+  let total=0, rows="";
+  cart.forEach((qty,uid)=>{
+    const data = idMap.get(uid);
+    if(!data) return;
+    const it = data.item; 
+    const sub = it.p * qty; 
+    total += sub;
+    rows+=`
+      <div class="line">
+        <div class="info"><h4>${it.n}</h4><div class="unit">${clp(it.p)} c/u</div></div>
+        <div class="right">
+          <span class="lp">${clp(sub)}</span>
+          <div class="qty">
+            <button onclick="chg('${uid}',-1)" aria-label="Quitar uno">−</button>
+            <span>${qty}</span>
+            <button onclick="chg('${uid}',1)" aria-label="Agregar uno">＋</button>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  const fields=`
+    <div class="fields" style="margin-top:16px;">
+      <div class="field"><label>Tu nombre</label>
+        <input id="fName" type="text" placeholder="Ej: Camila Rojas" oninput="validate()"></div>
+      <div class="field"><label>Modalidad de servicio</label>
+        <input type="text" value="Solo para llevar (Retiro en local)" disabled style="opacity:0.7; background:var(--surface-2)">
+      </div>
+      <div class="field"><label>Notas / Indicaciones (opcional)</label>
+        <textarea id="fNotes" placeholder="Ej: sin palta, salsas extra, hora aproximada de retiro, etc."></textarea></div>
+    </div>`;
+
+  body.innerHTML = rows + fields;
+  document.getElementById("total").textContent = clp(total);
+  validate();
+}
+
+function chg(uid,delta){
+  const q = (cart.get(uid)||0) + delta;
+  if(q<=0) cart.delete(uid); else cart.set(uid, q);
+  refreshCart();
+}
+
+function validate(){
+  const btn = document.getElementById("waBtn"); if(!btn) return;
+  const name = (document.getElementById("fName")?.value||"").trim();
+  btn.disabled = !(name.length>1);
+}
+
+function sendWhatsApp(){
+  if(cart.size===0) return;
+  const name = document.getElementById("fName").value.trim();
+  const notes = document.getElementById("fNotes").value.trim();
+
+  let total=0, lines=[];
+  cart.forEach((qty,uid)=>{
+    const data = idMap.get(uid);
+    if(!data) return;
+    const it = data.item; 
+    const sub = it.p * qty; 
+    total += sub;
+    lines.push(`• ${qty}× ${it.n} — ${clp(sub)}`);
+  });
+
+  let msg = `¡Hola Yutori! 🍣 Quiero hacer un pedido para RETIRO:\n\n`;
+  msg += lines.join("\n");
+  msg += `\n\n*Total: ${clp(total)}*`;
+  msg += `\n\n👤 Nombre: ${name}`;
+  msg += `\n🛍️ Modalidad: Solo para llevar (Retiro en local)`;
+  if(notes) msg += `\n📝 Notas: ${notes}`;
+
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+}
+
+let toastT;
+function toast(txt){
+  const t = document.getElementById("toast");
+  t.textContent = txt; t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove("show"), 1600);
+}
+
+document.addEventListener("keydown", e => { if(e.key==="Escape") closeDrawer(); });
+</script>
+</body>
+</html>
