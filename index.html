@@ -222,12 +222,15 @@
   .wa-note{text-align:center;font-size:.76rem;color:var(--muted);margin-top:9px}
 
   .admin-bar {
-    position: fixed; bottom: 20px; right: 20px; z-index: 80;
-    background: var(--surface); border: 2px solid var(--red); padding: 12px 18px;
-    border-radius: 999px; box-shadow: var(--shadow); display: none; align-items: center; gap: 12px;
+    position: fixed; bottom: 16px; right: 16px; z-index: 80;
+    background: var(--surface); border: 2px solid var(--red); padding: 10px 14px;
+    border-radius: 16px; box-shadow: var(--shadow); display: none; align-items: center; gap: 8px;
+    flex-wrap: wrap; justify-content: flex-end; max-width: calc(100vw - 32px);
   }
+  @media(max-width:560px){ .admin-bar{ left:16px; justify-content:center; } }
   body.admin-mode .admin-bar { display: flex; }
   .admin-bar span { font-weight: 700; font-size: 0.85rem; color: var(--red); }
+  .admin-bar .btn{ padding:8px 14px; font-size:.82rem; }
 
   @media(max-width:560px){
     .hero-inner{grid-template-columns:1fr;padding:56px 20px 56px}
@@ -264,6 +267,32 @@
   .login-box .wa{margin-top:16px}
   .login-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;font-size:1.4rem;color:var(--muted);transition:.15s;z-index:2}
   .login-close:hover{background:var(--surface-2);color:var(--text)}
+
+  /* Mostrar/ocultar contraseña */
+  .pw-field{position:relative}
+  .pw-field input{padding-right:44px}
+  .login-box .pw-field input{padding-left:44px;padding-right:44px}
+  .pw-eye{position:absolute;top:50%;right:8px;transform:translateY(-50%);width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;border-radius:8px;color:var(--muted);transition:.15s}
+  .pw-eye:hover{color:var(--red);background:var(--surface-2)}
+  .pw-eye svg{width:19px;height:19px}
+
+  /* Promociones */
+  .promo-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;
+    border:1px solid var(--line);border-radius:10px;background:var(--surface-2);margin-bottom:8px}
+  .promo-row b{font-family:var(--serif);letter-spacing:.04em}
+  .promo-tag{margin-left:10px;font-size:.78rem;color:var(--red);font-weight:700}
+  .promo-apply{display:flex;gap:8px}
+  .promo-apply input{flex:1}
+  .promo-apply button{white-space:nowrap;padding:0 16px;border:1.5px solid var(--red);color:var(--red);
+    border-radius:10px;font-weight:700;font-size:.85rem;transition:.15s}
+  .promo-apply button:hover{background:var(--red);color:#fff}
+  .promo-msg{font-size:.8rem;font-weight:700;margin-top:6px;min-height:16px}
+  .promo-msg.ok{color:#3fae63}
+  .promo-msg.err{color:var(--red)}
+  .cart-summary{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:.9rem;color:var(--muted)}
+  .cart-summary div{display:flex;justify-content:space-between;padding:3px 0}
+  .cart-summary .disc{color:#3fae63;font-weight:700}
 
   .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120%);background:var(--red);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:200;transition:transform .3s;box-shadow:0 12px 30px -10px var(--red-glow)}
   .toast.show{transform:translate(-50%,0)}
@@ -322,10 +351,12 @@
 </main>
 
 <div class="admin-bar" id="adminBar">
-  <span>🛠️ Modo Admin Activo</span>
-  <button class="btn btn-red" style="padding: 8px 16px; font-size: 0.85rem;" onclick="openProductModal()">＋ Nuevo Producto</button>
-  <button class="btn btn-ghost" style="padding: 8px 16px; font-size: 0.85rem;" onclick="openCategoryModal()">＋ Nueva Categoría</button>
-  <button class="btn btn-ghost" style="padding: 8px 16px; font-size: 0.85rem; border-color:var(--red); color:var(--red);" onclick="toggleAdminMode()">Salir</button>
+  <span>🛠️ Admin</span>
+  <button class="btn btn-red" onclick="openProductModal()">＋ Producto</button>
+  <button class="btn btn-ghost" onclick="openCategoryModal()">＋ Categoría</button>
+  <button class="btn btn-ghost" onclick="openPromoModal()">🏷️ Promos</button>
+  <button class="btn btn-ghost" onclick="openPasswordModal()">🔑 Contraseña</button>
+  <button class="btn btn-ghost" style="border-color:var(--red); color:var(--red);" onclick="toggleAdminMode()">Salir ⏻</button>
 </div>
 
 <section class="ig-cta reveal">
@@ -391,12 +422,15 @@
     <button class="login-close" onclick="closeLogin()" aria-label="Cerrar">×</button>
     <div class="lg-kana" aria-hidden="true">管理</div>
     <h3>Acceso administrador</h3>
-    <p>Ingresa tu PIN para gestionar la carta.</p>
-    <div class="field">
-      <input id="loginPin" type="password" inputmode="numeric" maxlength="8" placeholder="••••"
+    <p>Ingresa tu contraseña para gestionar la carta.</p>
+    <div class="field pw-field">
+      <input id="loginPin" type="password" maxlength="24" placeholder="Contraseña"
              autocomplete="off" onkeydown="if(event.key==='Enter')submitLogin()">
+      <button type="button" class="pw-eye" onclick="togglePw('loginPin', this)" aria-label="Mostrar contraseña">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
     </div>
-    <div class="login-err" id="loginErr">PIN incorrecto</div>
+    <div class="login-err" id="loginErr">Contraseña incorrecta</div>
     <button class="wa" onclick="submitLogin()">Ingresar</button>
   </div>
 </div>
@@ -647,7 +681,23 @@ document.getElementById("menu").addEventListener("click", e=>{
   refreshCart();
 });
 
-const ADMIN_PIN = "1234";
+const DEFAULT_PIN = "sashimi";
+let ADMIN_PIN = localStorage.getItem("yutori_pin") || DEFAULT_PIN;
+
+let PROMOS = [];
+try { PROMOS = JSON.parse(localStorage.getItem("yutori_promos") || "[]"); } catch(e){ PROMOS = []; }
+function savePromos(){ localStorage.setItem("yutori_promos", JSON.stringify(PROMOS)); }
+
+const EYE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const EYE_OFF = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M6.6 6.6A18.6 18.6 0 0 0 2 12s3.5 7 10 7a9 9 0 0 0 3.9-.85M14.12 14.12A3 3 0 0 1 9.88 9.88"/><path d="M2 2l20 20"/></svg>`;
+
+function togglePw(id, btn){
+  const el = document.getElementById(id);
+  const show = el.type === "password";
+  el.type = show ? "text" : "password";
+  btn.innerHTML = show ? EYE_OFF : EYE;
+  btn.setAttribute("aria-label", show ? "Ocultar contraseña" : "Mostrar contraseña");
+}
 
 function toggleAdminMode(){
   if(document.body.classList.contains("admin-mode")){
@@ -684,6 +734,98 @@ function submitLogin(){
     pin.classList.remove("err"); void pin.offsetWidth; pin.classList.add("err");
     err.classList.add("show");
     pin.select();
+  }
+}
+
+/* ---- Cambiar contraseña ---- */
+function openPasswordModal(){
+  openDrawerContainer('Cambiar contraseña <span class="kana">鍵</span>');
+  document.getElementById("drawerFoot").style.display = "none";
+  document.getElementById("drawerBody").innerHTML = `
+    <div class="fields">
+      <div class="field"><label>Contraseña actual</label>
+        <div class="pw-field">
+          <input id="pwCurrent" type="password" placeholder="Actual">
+          <button type="button" class="pw-eye" onclick="togglePw('pwCurrent',this)" aria-label="Mostrar contraseña">${EYE}</button>
+        </div></div>
+      <div class="field"><label>Nueva contraseña</label>
+        <div class="pw-field">
+          <input id="pwNew" type="password" placeholder="Mínimo 4 caracteres">
+          <button type="button" class="pw-eye" onclick="togglePw('pwNew',this)" aria-label="Mostrar contraseña">${EYE}</button>
+        </div></div>
+      <div class="field"><label>Repetir nueva contraseña</label>
+        <div class="pw-field">
+          <input id="pwNew2" type="password" placeholder="Repite la nueva">
+          <button type="button" class="pw-eye" onclick="togglePw('pwNew2',this)" aria-label="Mostrar contraseña">${EYE}</button>
+        </div></div>
+      <button class="wa" style="margin-top:14px;" onclick="savePassword()">Guardar contraseña</button>
+    </div>`;
+}
+
+function savePassword(){
+  const cur = document.getElementById("pwCurrent").value;
+  const n1 = document.getElementById("pwNew").value;
+  const n2 = document.getElementById("pwNew2").value;
+  if(cur !== ADMIN_PIN){ alert("La contraseña actual no es correcta."); return; }
+  if(n1.length < 4){ alert("La nueva contraseña debe tener al menos 4 caracteres."); return; }
+  if(n1 !== n2){ alert("Las contraseñas nuevas no coinciden."); return; }
+  ADMIN_PIN = n1;
+  localStorage.setItem("yutori_pin", n1);
+  closeDrawer();
+  toast("Contraseña actualizada");
+}
+
+/* ---- Códigos de promoción ---- */
+function openPromoModal(){
+  openDrawerContainer('Códigos de promoción <span class="kana">割引</span>');
+  document.getElementById("drawerFoot").style.display = "none";
+  renderPromoModal();
+}
+
+function renderPromoModal(){
+  const list = PROMOS.length
+    ? PROMOS.map((pr,i)=>`
+        <div class="promo-row">
+          <div><b>${esc(pr.code)}</b><span class="promo-tag">${pr.type==='percent' ? pr.value+'% dcto' : clp(pr.value)+' dcto'}</span></div>
+          <button class="admin-card-btn del" style="display:inline-flex" onclick="deletePromo(${i})">🗑️</button>
+        </div>`).join("")
+    : `<p style="color:var(--muted);font-size:.88rem;margin-bottom:6px">Aún no hay códigos creados.</p>`;
+
+  document.getElementById("drawerBody").innerHTML = `
+    <div class="promo-list">${list}</div>
+    <div class="fields" style="border-top:1px solid var(--line);margin-top:14px;padding-top:16px">
+      <div class="field"><label>Código</label>
+        <input id="prCode" type="text" placeholder="Ej: BIENVENIDO" style="text-transform:uppercase"></div>
+      <div class="field"><label>Tipo de descuento</label>
+        <select id="prType" onchange="document.getElementById('prValLbl').textContent = this.value==='percent' ? 'Porcentaje (%)' : 'Monto (CLP)'">
+          <option value="percent">Porcentaje (%)</option>
+          <option value="fixed">Monto fijo (CLP)</option>
+        </select></div>
+      <div class="field"><label id="prValLbl">Porcentaje (%)</label>
+        <input id="prValue" type="number" placeholder="Ej: 10"></div>
+      <button class="wa" style="margin-top:8px" onclick="savePromo()">Agregar código</button>
+    </div>`;
+}
+
+function savePromo(){
+  const code = (document.getElementById("prCode").value||"").trim().toUpperCase();
+  const type = document.getElementById("prType").value;
+  const value = parseInt(document.getElementById("prValue").value);
+  if(!code || isNaN(value) || value<=0){ alert("Completa el código y un valor válido."); return; }
+  if(type==='percent' && value>100){ alert("El porcentaje no puede superar 100."); return; }
+  if(PROMOS.some(p=>p.code===code)){ alert("Ese código ya existe."); return; }
+  PROMOS.push({ code, type, value });
+  savePromos();
+  renderPromoModal();
+  toast("Código agregado");
+}
+
+function deletePromo(i){
+  if(confirm("¿Eliminar este código de promoción?")){
+    PROMOS.splice(i,1);
+    savePromos();
+    renderPromoModal();
+    toast("Código eliminado");
   }
 }
 
@@ -833,6 +975,25 @@ function openCart(){
   refreshCart();
 }
 
+let appliedPromo = null, promoFeedback = "";
+
+function promoDiscount(subtotal){
+  if(!appliedPromo) return 0;
+  const d = appliedPromo.type==='percent'
+    ? Math.round(subtotal * appliedPromo.value / 100)
+    : appliedPromo.value;
+  return Math.min(d, subtotal);
+}
+
+function applyPromo(){
+  const code = (document.getElementById("fPromo").value||"").trim().toUpperCase();
+  if(!code){ appliedPromo=null; promoFeedback=""; refreshCart(); return; }
+  const found = PROMOS.find(p=>p.code===code);
+  if(found){ appliedPromo=found; promoFeedback="ok"; }
+  else { appliedPromo=null; promoFeedback="err"; }
+  refreshCart();
+}
+
 function refreshCart(){
   const count = [...cart.values()].reduce((a,b)=>a+b,0);
   document.getElementById("hdrCount").textContent = count;
@@ -840,6 +1001,7 @@ function refreshCart(){
   const foot = document.getElementById("drawerFoot");
 
   if(cart.size===0){
+    appliedPromo=null; promoFeedback="";
     foot.style.display="none";
     body.innerHTML=`<div class="empty"><span class="kana">空</span>Tu pedido está vacío.<br>Agrega algo rico de la carta.</div>`;
     return;
@@ -868,6 +1030,19 @@ function refreshCart(){
 
   const fields=`
     <div class="fields" style="margin-top:16px;">
+      <div class="field"><label>Código de promoción</label>
+        <div class="promo-apply">
+          <input id="fPromo" type="text" placeholder="Ingresa tu código" style="text-transform:uppercase"
+                 value="${appliedPromo?esc(appliedPromo.code):''}"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromo();}">
+          <button type="button" onclick="applyPromo()">Aplicar</button>
+        </div>
+        <div class="promo-msg ${promoFeedback}">${
+          appliedPromo && promoFeedback==='ok'
+            ? '✓ Código «'+esc(appliedPromo.code)+'» aplicado'
+            : (promoFeedback==='err' ? '✕ Código no válido' : '')
+        }</div>
+      </div>
       <div class="field"><label>Tu nombre</label>
         <input id="fName" type="text" placeholder="Ej: Camila Rojas" oninput="validate()"></div>
       <div class="field"><label>Modalidad de servicio</label>
@@ -877,8 +1052,16 @@ function refreshCart(){
         <textarea id="fNotes" placeholder="Ej: sin palta, salsas extra, hora aproximada de retiro, etc."></textarea></div>
     </div>`;
 
-  body.innerHTML = rows + fields;
-  document.getElementById("total").textContent = clp(total);
+  const discount = promoDiscount(total);
+  const finalTotal = total - discount;
+  const summary = discount>0 ? `
+    <div class="cart-summary">
+      <div><span>Subtotal</span><span>${clp(total)}</span></div>
+      <div class="disc"><span>Descuento (${esc(appliedPromo.code)})</span><span>−${clp(discount)}</span></div>
+    </div>` : "";
+
+  body.innerHTML = rows + summary + fields;
+  document.getElementById("total").textContent = clp(finalTotal);
   validate();
 }
 
@@ -911,7 +1094,14 @@ function sendWhatsApp(){
 
   let msg = `¡Hola Yutori! 🍣 Quiero hacer un pedido para RETIRO:\n\n`;
   msg += lines.join("\n");
-  msg += `\n\n*Total: ${clp(total)}*`;
+  const discount = promoDiscount(total);
+  if(discount>0){
+    msg += `\n\n*Subtotal: ${clp(total)}*`;
+    msg += `\n*Descuento (${appliedPromo.code}): −${clp(discount)}*`;
+    msg += `\n*Total: ${clp(total - discount)}*`;
+  } else {
+    msg += `\n\n*Total: ${clp(total)}*`;
+  }
   msg += `\n\n👤 Nombre: ${name}`;
   msg += `\n🛍️ Modalidad: Solo para llevar (Retiro en local)`;
   if(notes) msg += `\n📝 Notas: ${notes}`;
@@ -931,7 +1121,7 @@ document.addEventListener("keydown", e => { if(e.key==="Escape"){ closeDrawer();
 /* Título deslizante en la pestaña cuando el usuario se cambia a otra pestaña */
 (function tabTitleMarquee(){
   const original = document.title;
-  const scrolling = "🍣 Yutori Sushi — ¡Te esperamos! · ";
+  const scrolling = "Yutori Sushi 🍣 — Viña";
   let text = scrolling, timer = null;
   function tick(){
     text = text.substring(1) + text.substring(0,1);
