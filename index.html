@@ -53,14 +53,14 @@
   
   .header-actions { display: flex; gap: 10px; align-items: center; }
   .cart-btn{display:flex;align-items:center;gap:9px;background:var(--red);color:#fff;padding:10px 17px;border-radius:999px;font-weight:700;font-size:.9rem;transition:transform .15s, box-shadow .25s, background .2s}
-  .admin-toggle-btn{
+  .icon-btn{
     display:flex;align-items:center;justify-content:center;
     width:40px;height:40px;border-radius:50%;
     background:transparent;border:1.5px solid var(--line);color:var(--muted);
     transition:transform .15s, border-color .2s, color .2s, background .2s;
   }
-  .admin-toggle-btn svg{width:19px;height:19px}
-  .admin-toggle-btn:hover{border-color:var(--red);color:var(--red);transform:translateY(-1px)}
+  .icon-btn svg{width:19px;height:19px}
+  .icon-btn:hover{border-color:var(--red);color:var(--red);transform:translateY(-1px)}
   body.admin-mode .admin-toggle-btn{border-color:var(--red);color:#fff;background:var(--red);box-shadow:0 8px 22px -8px var(--red-glow)}
 
   /* Kana con efecto neón al pasar el cursor */
@@ -198,7 +198,6 @@
     transition:transform .15s, background .2s, box-shadow .25s}
   .ig-btn:hover{background:var(--red-d);transform:translateY(-2px);box-shadow:0 18px 44px -10px var(--red-glow)}
   .ig-btn svg{width:22px;height:22px}
-  .ig-handle{color:var(--muted);font-size:.9rem;letter-spacing:.02em}
 
   footer{background:#050506;border-top:1px solid var(--line)}
   .foot{max-width:1120px;margin:0 auto;padding:52px 20px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:28px}
@@ -251,6 +250,43 @@
   .wa:hover{background:var(--red-d);transform:translateY(-1px)}
   .wa:disabled{background:var(--surface);color:#5f5c55;cursor:not-allowed;transform:none;box-shadow:none;border:1px solid var(--line)}
   .wa-note{text-align:center;font-size:.76rem;color:var(--muted);margin-top:9px}
+
+  .pickup-note{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--red);
+    border-radius:10px;padding:12px 14px;font-size:.85rem;color:var(--text);margin-bottom:14px;line-height:1.5}
+  .pickup-note b{color:var(--red)}
+  .pickup-link{text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:3px;transition:.15s}
+  .pickup-link:hover{color:var(--red)}
+
+  .transfer-box{border:1px dashed var(--line);border-radius:14px;padding:0;margin-bottom:16px;background:var(--surface-2);overflow:hidden}
+  .transfer-h{font-weight:700;font-size:.85rem;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
+  .transfer-h::-webkit-details-marker{display:none}
+  .transfer-h:hover{color:var(--red)}
+  .transfer-chev{width:17px;height:17px;flex:none;transition:transform .2s}
+  .transfer-box[open] .transfer-chev{transform:rotate(180deg)}
+  .transfer-content{padding:0 16px 14px}
+  .transfer-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+  .transfer-row:first-of-type{border-top:none}
+  .transfer-row .t-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:2px}
+  .transfer-row .t-value{font-weight:700;font-size:.87rem;word-break:break-word}
+  .transfer-copy{flex:none;width:32px;height:32px;border-radius:8px;border:1px solid var(--line);color:var(--muted);
+    display:flex;align-items:center;justify-content:center;transition:.15s}
+  .transfer-copy:hover{border-color:var(--red);color:var(--red);background:rgba(255,33,48,.08)}
+  .transfer-copy svg{width:15px;height:15px}
+  .transfer-copy.copied{border-color:#1f7a3d;color:#1f7a3d;background:rgba(31,122,61,.1)}
+  .transfer-copy-all{width:100%;margin-top:8px;padding:11px;border-radius:10px;border:1.5px solid var(--red);
+    color:var(--red);font-weight:700;font-size:.82rem;transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .transfer-copy-all:hover{background:var(--red);color:#fff}
+  .transfer-copy-all svg{width:15px;height:15px}
+  .transfer-copy-all.copied{background:#1f7a3d;border-color:#1f7a3d;color:#fff}
+
+  .map-cta{border-top:1px solid var(--line);background:var(--surface);scroll-margin-top:80px}
+  .map-inner{max-width:1120px;margin:0 auto;padding:64px 20px}
+  .map-inner .section-head{margin-bottom:26px}
+  .map-frame{width:100%;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+  .map-frame iframe{width:100%;height:380px;border:0;display:block}
+  .map-actions{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap}
+  @media(max-width:560px){ .map-frame iframe{height:300px} }
 
   .admin-bar {
     position: fixed; bottom: 16px; right: 16px; z-index: 80;
@@ -325,6 +361,16 @@
     border:1px solid var(--line);border-radius:10px;background:var(--surface-2);margin-bottom:8px}
   .promo-row b{font-family:var(--serif);letter-spacing:.04em}
   .promo-tag{margin-left:10px;font-size:.78rem;color:var(--red);font-weight:700}
+
+  .promo-details{border:1px dashed var(--line);border-radius:12px;background:var(--surface-2);overflow:hidden}
+  .promo-summary{font-weight:700;font-size:.82rem;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;
+    gap:8px;cursor:pointer;list-style:none;color:var(--text);-webkit-tap-highlight-color:transparent}
+  .promo-summary::-webkit-details-marker{display:none}
+  .promo-summary:hover{color:var(--red)}
+  .promo-chev{width:16px;height:16px;flex:none;transition:transform .2s}
+  .promo-details[open] .promo-chev{transform:rotate(180deg)}
+  .promo-details-body{padding:0 14px 12px}
+
   .promo-apply{display:flex;gap:8px}
   .promo-apply input{flex:1}
   .promo-apply button{white-space:nowrap;padding:0 16px;border:1.5px solid var(--red);color:var(--red);
@@ -338,8 +384,14 @@
   .cart-summary .disc{color:#3fae63;font-weight:700}
 
   /* Sugerencias en el carrito */
-  .suggest{margin-top:18px;padding:14px 16px;border:1px dashed var(--line);border-radius:14px;background:var(--surface-2)}
-  .suggest-h{font-weight:700;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+  .suggest{margin-top:18px;padding:0;border:1px dashed var(--line);border-radius:14px;background:var(--surface-2);overflow:hidden}
+  .suggest-h{font-weight:700;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);
+    padding:13px 16px;margin-bottom:0;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
+  .suggest-h::-webkit-details-marker{display:none}
+  .suggest-chev{width:15px;height:15px;flex:none;transition:transform .2s}
+  .suggest[open] .suggest-chev{transform:rotate(180deg)}
+  .suggest-content{padding:0 16px 14px}
   .suggest-row{display:flex;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
   .suggest-row:first-of-type{border-top:none}
   .suggest-info{flex:1;min-width:0}
@@ -391,7 +443,13 @@
       <span class="kana">ゆとり</span>
     </a>
     <div class="header-actions">
-      <button class="admin-toggle-btn" onclick="toggleAdminMode()" title="Acceso administrador" aria-label="Acceso administrador">
+      <a class="icon-btn" href="#ubicacion" title="Ver ubicación en el mapa" aria-label="Ver ubicación en el mapa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      </a>
+      <a class="icon-btn" href="https://www.instagram.com/yutori_sushi_food/" target="_blank" rel="noopener" title="Síguenos en Instagram" aria-label="Síguenos en Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.15" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <button class="icon-btn admin-toggle-btn" onclick="toggleAdminMode()" title="Acceso administrador" aria-label="Acceso administrador">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>
       </button>
       <button class="cart-btn" onclick="openCart()" aria-label="Ver carrito">
@@ -461,7 +519,28 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
       Seguir en Instagram
     </a>
-    <span class="ig-handle">@yutori_sushi_food</span>
+  </div>
+</section>
+
+<section class="map-cta reveal" id="ubicacion">
+  <div class="map-inner">
+    <div class="section-head">
+      <div class="eyebrow">Cómo llegar</div>
+      <h2>Encuéntranos en Viña del Mar</h2>
+      <p>Etchevers 210, dpto 301, Viña del Mar. Retiro en local (solo para llevar) — coordina la hora aproximada por WhatsApp.</p>
+    </div>
+    <div class="map-frame">
+      <iframe
+        src="https://www.google.com/maps?q=Etchevers+210,+Vi%C3%B1a+del+Mar,+Chile&output=embed"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+        title="Ubicación de Yutori Sushi en Google Maps"></iframe>
+    </div>
+    <div class="map-actions">
+      <a class="btn btn-red" href="https://www.google.com/maps/dir/?api=1&destination=Etchevers+210,+Vi%C3%B1a+del+Mar,+Chile" target="_blank" rel="noopener">Cómo llegar</a>
+      <a class="btn btn-ghost" href="https://wa.me/56942791623" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+    </div>
   </div>
 </section>
 
@@ -498,6 +577,58 @@
   </div>
   <div class="drawer-body" id="drawerBody"></div>
   <div class="drawer-foot" id="drawerFoot" style="display:none">
+    <div class="pickup-note">
+      📍 Antes de enviar tu pedido: debes retirarlo en
+      <a class="pickup-link" href="https://www.google.com/maps/search/?api=1&query=Etchevers+210,+Vi%C3%B1a+del+Mar,+Chile" target="_blank" rel="noopener"><b>Etchevers 210, dpto 301, Viña del Mar</b></a>
+      (Solo para llevar).
+    </div>
+    <details class="transfer-box">
+      <summary class="transfer-h">💳 ¿Pagas con transferencia? Ver datos
+        <svg class="transfer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <div class="transfer-content">
+        <div class="transfer-row">
+          <div><div class="t-label">Nombre</div><div class="t-value">Yutori sushi food spa</div></div>
+          <button type="button" class="transfer-copy" onclick="copyTransferField('nombre', this)" aria-label="Copiar nombre">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <div class="transfer-row">
+          <div><div class="t-label">RUT</div><div class="t-value">779702782</div></div>
+          <button type="button" class="transfer-copy" onclick="copyTransferField('rut', this)" aria-label="Copiar RUT">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <div class="transfer-row">
+          <div><div class="t-label">Banco</div><div class="t-value">Mercado Pago</div></div>
+          <button type="button" class="transfer-copy" onclick="copyTransferField('banco', this)" aria-label="Copiar banco">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <div class="transfer-row">
+          <div><div class="t-label">Tipo de cuenta</div><div class="t-value">Cuenta vista</div></div>
+          <button type="button" class="transfer-copy" onclick="copyTransferField('tipoCuenta', this)" aria-label="Copiar tipo de cuenta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <div class="transfer-row">
+          <div><div class="t-label">N° de cuenta</div><div class="t-value">1017820539</div></div>
+          <button type="button" class="transfer-copy" onclick="copyTransferField('numeroCuenta', this)" aria-label="Copiar número de cuenta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <div class="transfer-row">
+          <div><div class="t-label">Correo</div><div class="t-value">yutori.sushi.food@gmail.com</div></div>
+          <button type="button" class="transfer-copy" onclick="copyTransferField('correo', this)" aria-label="Copiar correo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <button type="button" class="transfer-copy-all" onclick="copyAllTransfer(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar todos los datos
+        </button>
+      </div>
+    </details>
     <div class="totals">
       <span class="t-lbl">Total</span>
       <span class="t-val" id="total">$0</span>
@@ -1318,7 +1449,7 @@ function openCart(){
   refreshCart();
 }
 
-let appliedPromo = null, promoFeedback = "";
+let appliedPromo = null, promoFeedback = "", promoOpen = false;
 
 const SUGGESTIONS = ["Korokes (6u)", "Gyosas Vegetal (6u)"];
 
@@ -1335,6 +1466,7 @@ function addSuggestion(uid){
   syncCardQty(uid);
 }
 
+let suggestOpen = false;
 function buildSuggestions(){
   const items = SUGGESTIONS
     .map(n => ({ n, uid: findUidByName(n) }))
@@ -1352,7 +1484,13 @@ function buildSuggestions(){
         <button class="suggest-add" onclick="addSuggestion('${s.uid}')" aria-label="Agregar ${esc(it.n)}">＋</button>
       </div>`;
   }).join("");
-  return `<div class="suggest"><div class="suggest-h">¿Algo más para tu pedido?</div>${rows}</div>`;
+  return `
+    <details class="suggest" ${suggestOpen?'open':''} ontoggle="suggestOpen=this.open">
+      <summary class="suggest-h">¿Algo más para tu pedido?
+        <svg class="suggest-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <div class="suggest-content">${rows}</div>
+    </details>`;
 }
 
 function promoDiscount(subtotal){
@@ -1416,24 +1554,31 @@ function refreshCart(){
 
   const fields=`
     <div class="fields" style="margin-top:16px;">
-      <div class="field"><label>Código de promoción</label>
-        <div class="promo-apply">
-          <input id="fPromo" type="text" placeholder="Ingresa tu código" style="text-transform:uppercase"
-                 value="${appliedPromo?esc(appliedPromo.code):''}"
-                 onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromo();}">
-          <button type="button" onclick="applyPromo()">Aplicar</button>
-        </div>
-        <div class="promo-msg ${promoFeedback==='ok' ? 'ok' : (promoFeedback ? 'err' : '')}">${
-          appliedPromo && promoFeedback==='ok'
-            ? '✓ Código «'+esc(appliedPromo.code)+'» aplicado'
-            : promoFeedback==='err' ? '✕ Código no válido'
-            : promoFeedback==='expired' ? '✕ Código vencido'
-            : promoFeedback==='maxed' ? '✕ Código agotado'
-            : ''
-        }</div>
+      <div class="field">
+        <details class="promo-details" ${promoOpen?'open':''} ontoggle="promoOpen=this.open">
+          <summary class="promo-summary">🏷️ ¿Tienes un código de promoción?
+            <svg class="promo-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="promo-details-body">
+            <div class="promo-apply">
+              <input id="fPromo" type="text" placeholder="Ingresa tu código" style="text-transform:uppercase"
+                     value="${appliedPromo?esc(appliedPromo.code):''}"
+                     onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromo();}">
+              <button type="button" onclick="applyPromo()">Aplicar</button>
+            </div>
+            <div class="promo-msg ${promoFeedback==='ok' ? 'ok' : (promoFeedback ? 'err' : '')}">${
+              appliedPromo && promoFeedback==='ok'
+                ? '✓ Código «'+esc(appliedPromo.code)+'» aplicado'
+                : promoFeedback==='err' ? '✕ Código no válido'
+                : promoFeedback==='expired' ? '✕ Código vencido'
+                : promoFeedback==='maxed' ? '✕ Código agotado'
+                : ''
+            }</div>
+          </div>
+        </details>
       </div>
       <div class="field"><label>Tu nombre</label>
-        <input id="fName" type="text" placeholder="Ej: Don Camarón" oninput="validate()"></div>
+        <input id="fName" type="text" placeholder="Ej: Juan Pablo Galdamez" oninput="validate()"></div>
       <div class="field"><label>Modalidad de servicio</label>
         <input type="text" value="Solo para llevar (Retiro en local)" disabled style="opacity:0.7; background:var(--surface-2)">
       </div>
@@ -1499,6 +1644,49 @@ function sendWhatsApp(){
   if(notes) msg += `\n📝 Notas: ${notes}`;
 
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+}
+
+const TRANSFER_INFO = {
+  nombre: "Yutori sushi food spa",
+  rut: "779702782",
+  banco: "Mercado Pago",
+  tipoCuenta: "Cuenta vista",
+  numeroCuenta: "1017820539",
+  correo: "yutori.sushi.food@gmail.com"
+};
+
+function copyToClipboard(text, onDone){
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(onDone).catch(()=>fallbackCopy(text, onDone));
+  } else {
+    fallbackCopy(text, onDone);
+  }
+}
+
+function fallbackCopy(text, onDone){
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand("copy"); onDone(); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+function markCopied(btn){
+  if(!btn) return;
+  btn.classList.add("copied");
+  clearTimeout(btn._copyT);
+  btn._copyT = setTimeout(()=>btn.classList.remove("copied"), 1500);
+}
+
+function copyTransferField(field, btn){
+  const text = TRANSFER_INFO[field];
+  if(!text) return;
+  copyToClipboard(text, ()=>{ markCopied(btn); toast("Copiado ✓"); });
+}
+
+function copyAllTransfer(btn){
+  const text = `Nombre: ${TRANSFER_INFO.nombre}\nRUT: ${TRANSFER_INFO.rut}\nBanco: ${TRANSFER_INFO.banco}\nTipo de cuenta: ${TRANSFER_INFO.tipoCuenta}\nN° de cuenta: ${TRANSFER_INFO.numeroCuenta}\nCorreo: ${TRANSFER_INFO.correo}`;
+  copyToClipboard(text, ()=>{ markCopied(btn); toast("Datos copiados ✓"); });
 }
 
 let toastT;
