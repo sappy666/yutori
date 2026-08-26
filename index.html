@@ -147,6 +147,10 @@
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
   .card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:9px;overflow:hidden;transition:border-color .2s, transform .2s, box-shadow .25s}
+  .card-img{width:calc(100% + 40px);max-width:none;margin:-20px -20px 2px;aspect-ratio:1/1;object-fit:cover;display:block}
+  .img-preview{width:160px;height:160px;object-fit:cover;border-radius:10px;margin-bottom:8px}
+  .img-remove{margin-top:8px;font-size:.8rem;font-weight:700;color:var(--muted);transition:.15s}
+  .img-remove:hover{color:var(--red)}
   .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red);transform:scaleY(0);transform-origin:top;transition:transform .25s}
   .card:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:0 20px 40px -24px var(--red-glow)}
   .card:hover::before{transform:scaleY(1)}
@@ -155,10 +159,20 @@
   .card .price{font-family:var(--serif);font-weight:900;color:var(--red);white-space:nowrap;font-size:1.1rem}
   .card .desc{color:var(--muted);font-size:.88rem;flex:1}
   
-  .card-actions { display: flex; gap: 8px; margin-top: 6px; }
+  .card-actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
   .add{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:transparent;border:1.5px solid var(--red);color:var(--red);border-radius:999px;padding:8px 16px;font-weight:700;font-size:.85rem;transition:.18s}
   .add:hover{background:var(--red);color:#fff}
   .add.added{background:#1f7a3d;border-color:#1f7a3d;color:#fff}
+
+  .qty-ctrl{flex:1;display:flex}
+  .qty-ctrl .qty{width:100%;justify-content:space-between;padding:4px 10px}
+  body.admin-mode .qty-ctrl{display:none}
+
+  .card.card-is-hidden{opacity:1}
+  body.admin-mode .card.card-is-hidden{opacity:.5}
+  .hidden-tag{display:none;margin-left:8px;font-size:.68rem;font-weight:700;color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:2px 8px;vertical-align:middle;white-space:nowrap}
+  body.admin-mode .hidden-tag{display:inline-block}
 
   .admin-card-btn {
     background: var(--surface-2); border: 1px solid var(--line); color: var(--muted);
@@ -350,6 +364,22 @@
   .scroll-top-btn.show{opacity:1;visibility:visible;transform:translateY(0)}
   .scroll-top-btn:hover{background:var(--red);border-color:var(--red);color:#fff;transform:translateY(-3px);box-shadow:0 8px 22px -8px var(--red-glow)}
   .scroll-top-btn svg{width:20px;height:20px}
+
+  /* Botón Flotante WhatsApp */
+  .wa-float{
+    position:fixed;bottom:24px;left:24px;z-index:70;
+    width:56px;height:56px;border-radius:50%;
+    background:#25D366;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 30px -10px rgba(37,211,102,.55);
+    transition:transform .2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .2s;
+  }
+  .wa-float:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 16px 36px -8px rgba(37,211,102,.7)}
+  .wa-float svg{width:29px;height:29px}
+  @media(max-width:560px){
+    .wa-float{width:50px;height:50px;bottom:20px;left:20px}
+    .wa-float svg{width:25px;height:25px}
+  }
 </style>
 </head>
 <body>
@@ -388,7 +418,7 @@
     </div>
     <div class="hero-strip">
       <span><span class="dot">&#9679;</span> <b>Ubicación</b> Etchevers 210, dpto 301, Viña del Mar (Solo para llevar)</span>
-      <span><span class="dot">&#9679;</span> <b>Horario</b> Mar a Dom &middot; 18:00&ndash;23:00</span>
+      <span><span class="dot">&#9679;</span> <b>Horario</b> Mar a Dom &middot; 12:00&ndash;02:00</span>
       <span><span class="dot">&#9679;</span> <b>Pedidos</b> por WhatsApp</span>
     </div>
   </section>
@@ -453,10 +483,10 @@
     <div>
       <div class="lbl">Horario</div>
       <a style="cursor:default">Martes a Domingo</a>
-      <a style="cursor:default">18:00 – 23:00 hrs</a>
+      <a style="cursor:default">12:00 – 02:00 hrs</a>
     </div>
   </div>
-  <div class="foot-bottom">© <span id="yr"></span> Yutori Sushi · Hecho con <span class="kana">ゆとり</span></div>
+  <div class="foot-bottom">© <span id="yr"></span> Yutori Sushi · Hecho con <span class="kana">ゆとり</span> · Sitio web por <a href="https://www.webfriends.cl" target="_blank" rel="noopener" style="color:var(--red);font-size:1.05rem;font-weight:700;text-decoration:none">Webfriends</a></div>
 </footer>
 
 <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
@@ -504,6 +534,11 @@
 <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()" aria-label="Volver arriba">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
 </button>
+
+<!-- Botón Flotante WhatsApp -->
+<a class="wa-float" href="https://wa.me/56942791623" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5 4.5.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 2a10 10 0 0 0-8.6 15L2 22l5.1-1.3A10 10 0 1 0 12 2m0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2"/></svg>
+</a>
 
 <script>
 const DEFAULT_MENU = [
@@ -670,8 +705,48 @@ function norm(s){
 }
 
 function saveMenu(){
-  localStorage.setItem("yutori_menu", JSON.stringify(MENU));
+  try{
+    localStorage.setItem("yutori_menu", JSON.stringify(MENU));
+  } catch(e){
+    alert("No se pudo guardar: se alcanzó el límite de almacenamiento del navegador. Prueba con una imagen más liviana o elimina alguna existente.");
+  }
   renderMenu();
+}
+
+function compressImage(file, size=640, quality=0.78, maxBytes=380*1024){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const side = Math.min(img.width, img.height);
+        const sx = (img.width - side) / 2, sy = (img.height - side) / 2;
+        const canvas = document.createElement("canvas");
+        canvas.width = size; canvas.height = size;
+        canvas.getContext("2d").drawImage(img, sx, sy, side, side, 0, 0, size, size);
+
+        const supportsWebp = canvas.toDataURL("image/webp").indexOf("data:image/webp") === 0;
+        const mime = supportsWebp ? "image/webp" : "image/jpeg";
+        const bytesOf = durl => Math.round((durl.length - durl.indexOf(",") - 1) * 3/4);
+
+        let q = quality, dataUrl = canvas.toDataURL(mime, q), tries = 0;
+        while(bytesOf(dataUrl) > maxBytes && q > 0.35 && tries < 6){
+          q -= 0.1;
+          dataUrl = canvas.toDataURL(mime, q);
+          tries++;
+        }
+        if(bytesOf(dataUrl) > maxBytes){
+          reject(new Error("La imagen sigue pesando demasiado incluso comprimida. Prueba con otra foto."));
+          return;
+        }
+        resolve(dataUrl);
+      };
+      img.onerror = ()=>reject(new Error("No se pudo leer la imagen."));
+      img.src = e.target.result;
+    };
+    reader.onerror = ()=>reject(new Error("No se pudo leer el archivo."));
+    reader.readAsDataURL(file);
+  });
 }
 
 function renderMenu(){
@@ -707,16 +782,21 @@ function renderMenu(){
       idMap.set(uid, { item: it, catIndex, itemIndex });
       
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = "card" + (it.hidden ? " card-is-hidden" : "");
       card.dataset.search = norm(it.n + " " + (it.d||""));
+      card.dataset.hidden = it.hidden ? "true" : "false";
       card.innerHTML = `
+        ${it.img ? `<img class="card-img" src="${esc(it.img)}" alt="${esc(it.n)}" loading="lazy">` : ''}
         <div class="top">
-          <h3>${esc(it.n)}</h3>
+          <h3>${esc(it.n)}${it.hidden ? '<span class="hidden-tag">Oculto</span>' : ''}</h3>
           <span class="price">${clp(it.p)}</span>
         </div>
         <p class="desc">${esc(it.d)}</p>
         <div class="card-actions">
-          <button class="add" data-uid="${uid}">＋ Agregar</button>
+          <div class="qty-ctrl" data-uid="${uid}">
+            <button class="add" data-uid="${uid}">＋ Agregar</button>
+          </div>
+          <button class="admin-card-btn" onclick="toggleProductVisibility(${catIndex}, ${itemIndex})">${it.hidden ? '👁️ Mostrar' : '🙈 Ocultar'}</button>
           <button class="admin-card-btn" onclick="openEditProductModal(${catIndex}, ${itemIndex})">✏️ Editar</button>
           <button class="admin-card-btn del" onclick="deleteProduct(${catIndex}, ${itemIndex})">🗑️</button>
         </div>`;
@@ -727,6 +807,7 @@ function renderMenu(){
   });
 
   if(document.getElementById("menuSearch")) filterMenu();
+  cart.forEach((qty,uid)=> syncCardQty(uid));
 }
 
 function filterMenu(){
@@ -734,14 +815,17 @@ function filterMenu(){
   const q = norm((input?.value || "").trim());
   const clr = document.getElementById("searchClear");
   if(clr) clr.style.display = q ? "flex" : "none";
+  const adminMode = document.body.classList.contains("admin-mode");
 
   let anyVisible = false;
   document.querySelectorAll(".cat-block").forEach(block=>{
     let visibleInBlock = 0;
     block.querySelectorAll(".card").forEach(card=>{
-      const match = !q || (card.dataset.search||"").includes(q);
-      card.style.display = match ? "" : "none";
-      if(match) visibleInBlock++;
+      const matchesSearch = !q || (card.dataset.search||"").includes(q);
+      const isHidden = card.dataset.hidden === "true";
+      const visible = matchesSearch && (!isHidden || adminMode);
+      card.style.display = visible ? "" : "none";
+      if(visible) visibleInBlock++;
     });
     block.style.display = visibleInBlock>0 ? "" : "none";
     if(visibleInBlock>0) anyVisible = true;
@@ -786,17 +870,35 @@ renderMenu();
   els.forEach(el => obs.observe(el));
 })();
 
+function isAdmin(){ return document.body.classList.contains("admin-mode"); }
+
+function syncCardQty(uid){
+  const wrap = document.querySelector(`.qty-ctrl[data-uid="${uid}"]`);
+  if(!wrap) return;
+  const qty = cart.get(uid) || 0;
+  if(qty <= 0){
+    wrap.innerHTML = `<button class="add" data-uid="${uid}">＋ Agregar</button>`;
+  } else {
+    wrap.innerHTML = `
+      <div class="qty">
+        <button onclick="chg('${uid}',-1)" aria-label="Quitar uno">−</button>
+        <span>${qty}</span>
+        <button onclick="chg('${uid}',1)" aria-label="Agregar uno">＋</button>
+      </div>`;
+  }
+}
+
 document.getElementById("menu").addEventListener("click", e=>{
   const btn = e.target.closest(".add");
   if(!btn) return;
+  if(isAdmin()) return;
   const uid = btn.dataset.uid;
   const data = idMap.get(uid);
   if(!data) return;
-  
+
   cart.set(uid, (cart.get(uid)||0)+1);
-  btn.classList.add("added"); btn.textContent="✓ Agregado";
-  setTimeout(()=>{btn.classList.remove("added");btn.textContent="＋ Agregar";},900);
   toast(`${data.item.n} agregado`);
+  syncCardQty(uid);
   refreshCart();
 });
 
@@ -821,6 +923,7 @@ function togglePw(id, btn){
 function toggleAdminMode(){
   if(document.body.classList.contains("admin-mode")){
     document.body.classList.remove("admin-mode");
+    filterMenu();
     toast("Modo Administrador desactivado");
   } else {
     openLogin();
@@ -848,6 +951,7 @@ function submitLogin(){
   if(pin.value === ADMIN_PIN){
     closeLogin();
     document.body.classList.add("admin-mode");
+    filterMenu();
     toast("Modo Administrador activado");
   } else {
     pin.classList.remove("err"); void pin.offsetWidth; pin.classList.add("err");
@@ -895,20 +999,40 @@ function savePassword(){
 }
 
 /* ---- Códigos de promoción ---- */
+let editingPromoIndex = null;
+
 function openPromoModal(){
+  editingPromoIndex = null;
   openDrawerContainer('Códigos de promoción <span class="kana">割引</span>');
   document.getElementById("drawerFoot").style.display = "none";
   renderPromoModal();
 }
 
+function fmtDate(iso){
+  const [y,m,d] = iso.split("-");
+  return `${d}-${m}-${y}`;
+}
+
 function renderPromoModal(){
   const list = PROMOS.length
-    ? PROMOS.map((pr,i)=>`
-        <div class="promo-row">
-          <div><b>${esc(pr.code)}</b><span class="promo-tag">${pr.type==='percent' ? pr.value+'% dcto' : clp(pr.value)+' dcto'}</span></div>
-          <button class="admin-card-btn del" style="display:inline-flex" onclick="deletePromo(${i})">🗑️</button>
-        </div>`).join("")
+    ? PROMOS.map((pr,i)=>{
+        const usesInfo = pr.maxUses ? `${pr.uses||0}/${pr.maxUses} usos` : "Usos ilimitados";
+        const expInfo = pr.expiresAt ? `Vence ${fmtDate(pr.expiresAt)}` : "Sin vencimiento";
+        return `
+        <div class="promo-row" style="flex-direction:column;align-items:stretch;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <div><b>${esc(pr.code)}</b><span class="promo-tag">${pr.type==='percent' ? pr.value+'% dcto' : clp(pr.value)+' dcto'}</span></div>
+            <div style="display:flex;gap:6px">
+              <button class="admin-card-btn" style="display:inline-flex" onclick="editPromo(${i})">✏️</button>
+              <button class="admin-card-btn del" style="display:inline-flex" onclick="deletePromo(${i})">🗑️</button>
+            </div>
+          </div>
+          <div style="font-size:.78rem;color:var(--muted)">${usesInfo} · ${expInfo}</div>
+        </div>`;
+      }).join("")
     : `<p style="color:var(--muted);font-size:.88rem;margin-bottom:6px">Aún no hay códigos creados.</p>`;
+
+  const editing = editingPromoIndex !== null;
 
   document.getElementById("drawerBody").innerHTML = `
     <div class="promo-list">${list}</div>
@@ -922,26 +1046,69 @@ function renderPromoModal(){
         </select></div>
       <div class="field"><label id="prValLbl">Porcentaje (%)</label>
         <input id="prValue" type="number" placeholder="Ej: 10"></div>
-      <button class="wa" style="margin-top:8px" onclick="savePromo()">Agregar código</button>
+      <div class="field"><label>Límite de usos (opcional)</label>
+        <input id="prMaxUses" type="number" min="1" placeholder="Vacío = ilimitado"></div>
+      <div class="field"><label>Fecha de vencimiento (opcional)</label>
+        <input id="prExpires" type="date"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="wa" id="prSaveBtn" style="flex:1" onclick="savePromo()">${editing ? 'Guardar cambios' : 'Agregar código'}</button>
+        <button type="button" class="btn btn-ghost" id="prCancelEdit" style="${editing ? '' : 'display:none'}" onclick="cancelEditPromo()">Cancelar</button>
+      </div>
     </div>`;
+
+  if(editing){
+    const pr = PROMOS[editingPromoIndex];
+    document.getElementById("prCode").value = pr.code;
+    document.getElementById("prType").value = pr.type;
+    document.getElementById("prValLbl").textContent = pr.type==='percent' ? 'Porcentaje (%)' : 'Monto (CLP)';
+    document.getElementById("prValue").value = pr.value;
+    document.getElementById("prMaxUses").value = pr.maxUses || "";
+    document.getElementById("prExpires").value = pr.expiresAt || "";
+  }
+}
+
+function editPromo(i){
+  editingPromoIndex = i;
+  renderPromoModal();
+}
+
+function cancelEditPromo(){
+  editingPromoIndex = null;
+  renderPromoModal();
 }
 
 function savePromo(){
   const code = (document.getElementById("prCode").value||"").trim().toUpperCase();
   const type = document.getElementById("prType").value;
   const value = parseInt(document.getElementById("prValue").value);
+  const maxUsesRaw = document.getElementById("prMaxUses").value.trim();
+  const maxUses = maxUsesRaw ? parseInt(maxUsesRaw) : null;
+  const expiresAt = document.getElementById("prExpires").value || null;
+
   if(!code || isNaN(value) || value<=0){ alert("Completa el código y un valor válido."); return; }
   if(type==='percent' && value>100){ alert("El porcentaje no puede superar 100."); return; }
-  if(PROMOS.some(p=>p.code===code)){ alert("Ese código ya existe."); return; }
-  PROMOS.push({ code, type, value });
+  if(maxUsesRaw && (isNaN(maxUses) || maxUses<=0)){ alert("El límite de usos debe ser un número positivo."); return; }
+
+  const dupIndex = PROMOS.findIndex(p=>p.code===code);
+
+  if(editingPromoIndex === null){
+    if(dupIndex !== -1){ alert("Ese código ya existe."); return; }
+    PROMOS.push({ code, type, value, maxUses, expiresAt, uses:0 });
+    toast("Código agregado");
+  } else {
+    if(dupIndex !== -1 && dupIndex !== editingPromoIndex){ alert("Ese código ya existe."); return; }
+    PROMOS[editingPromoIndex] = { ...PROMOS[editingPromoIndex], code, type, value, maxUses, expiresAt };
+    toast("Código actualizado");
+    editingPromoIndex = null;
+  }
   savePromos();
   renderPromoModal();
-  toast("Código agregado");
 }
 
 function deletePromo(i){
   if(confirm("¿Eliminar este código de promoción?")){
     PROMOS.splice(i,1);
+    editingPromoIndex = null;
     savePromos();
     renderPromoModal();
     toast("Código eliminado");
@@ -985,8 +1152,52 @@ function saveNewCategory(){
   toast("Categoría agregada con éxito");
 }
 
+let currentImgData = null;
+
+function onProductImgChange(inputEl){
+  const file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  compressImage(file).then(dataUrl=>{
+    currentImgData = dataUrl;
+    updateImgPreview();
+  }).catch(err=>{
+    alert(err && err.message ? err.message : "No se pudo procesar la imagen.");
+    inputEl.value = "";
+  });
+}
+
+function removeProductImg(){
+  currentImgData = null;
+  const input = document.getElementById("pImgFile");
+  if(input) input.value = "";
+  updateImgPreview();
+}
+
+function updateImgPreview(){
+  const prev = document.getElementById("pImgPreview");
+  if(!prev) return;
+  if(currentImgData){
+    prev.src = currentImgData;
+    prev.style.display = "block";
+  } else {
+    prev.src = "";
+    prev.style.display = "none";
+  }
+}
+
+function imgFieldHtml(){
+  return `
+    <div class="field">
+      <label>Imagen del producto (opcional)</label>
+      <img id="pImgPreview" class="img-preview" style="${currentImgData?'':'display:none'}" src="${currentImgData?esc(currentImgData):''}" alt="Vista previa">
+      <input id="pImgFile" type="file" accept="image/*" onchange="onProductImgChange(this)">
+      <button type="button" class="img-remove" onclick="removeProductImg()">✕ Quitar imagen</button>
+    </div>`;
+}
+
 function openProductModal(){
   if(MENU.length === 0){ alert("Primero debes crear una categoría."); return; }
+  currentImgData = null;
   openDrawerContainer('Nuevo Producto <span class="kana">商品</span>');
   const body = document.getElementById("drawerBody");
   document.getElementById("drawerFoot").style.display = "none";
@@ -1011,6 +1222,7 @@ function openProductModal(){
         <label>Descripción / Ingredientes</label>
         <textarea id="pDesc" placeholder="Ej: Salmón, palta, queso crema..."></textarea>
       </div>
+      ${imgFieldHtml()}
       <button class="wa" style="margin-top:16px;" onclick="saveNewProduct()">Agregar Producto</button>
     </div>`;
 }
@@ -1022,8 +1234,10 @@ function saveNewProduct(){
   const d = document.getElementById("pDesc").value.trim();
 
   if(!n || isNaN(p)){ alert("Completa al menos el nombre y un precio válido."); return; }
-  
-  MENU[catIdx].items.push({ n, d, p });
+
+  const item = { n, d, p };
+  if(currentImgData) item.img = currentImgData;
+  MENU[catIdx].items.push(item);
   saveMenu();
   closeDrawer();
   toast("Producto creado con éxito");
@@ -1031,6 +1245,7 @@ function saveNewProduct(){
 
 function openEditProductModal(catIndex, itemIndex){
   const it = MENU[catIndex].items[itemIndex];
+  currentImgData = it.img || null;
   openDrawerContainer('Editar Producto <span class="kana">編集</span>');
   const body = document.getElementById("drawerBody");
   document.getElementById("drawerFoot").style.display = "none";
@@ -1055,6 +1270,7 @@ function openEditProductModal(catIndex, itemIndex){
         <label>Descripción</label>
         <textarea id="eDesc">${esc(it.d)}</textarea>
       </div>
+      ${imgFieldHtml()}
       <button class="wa" style="margin-top:16px;" onclick="updateProduct(${catIndex}, ${itemIndex})">Guardar Cambios</button>
     </div>`;
 }
@@ -1068,6 +1284,7 @@ function updateProduct(oldCatIdx, itemIdx){
   if(!n || isNaN(p)){ alert("Completa al menos el nombre y un precio válido."); return; }
 
   const itemObj = { n, d, p };
+  if(currentImgData) itemObj.img = currentImgData;
 
   if(oldCatIdx === newCatIdx){
     MENU[oldCatIdx].items[itemIdx] = itemObj;
@@ -1089,6 +1306,13 @@ function deleteProduct(catIndex, itemIndex){
   }
 }
 
+function toggleProductVisibility(catIndex, itemIndex){
+  const it = MENU[catIndex].items[itemIndex];
+  it.hidden = !it.hidden;
+  saveMenu();
+  toast(it.hidden ? "Producto ocultado del cliente" : "Producto visible para el cliente");
+}
+
 function openCart(){
   openDrawerContainer('Mi pedido <span class="kana">注文</span>');
   refreshCart();
@@ -1104,10 +1328,11 @@ function findUidByName(name){
 }
 
 function addSuggestion(uid){
-  if(!uid || !idMap.has(uid)) return;
+  if(!uid || !idMap.has(uid) || isAdmin()) return;
   cart.set(uid, (cart.get(uid)||0)+1);
   toast(`${idMap.get(uid).item.n} agregado`);
   refreshCart();
+  syncCardQty(uid);
 }
 
 function buildSuggestions(){
@@ -1142,8 +1367,16 @@ function applyPromo(){
   const code = (document.getElementById("fPromo").value||"").trim().toUpperCase();
   if(!code){ appliedPromo=null; promoFeedback=""; refreshCart(); return; }
   const found = PROMOS.find(p=>p.code===code);
-  if(found){ appliedPromo=found; promoFeedback="ok"; }
-  else { appliedPromo=null; promoFeedback="err"; }
+  if(!found){ appliedPromo=null; promoFeedback="err"; refreshCart(); return; }
+  if(found.expiresAt){
+    const today = new Date(); today.setHours(0,0,0,0);
+    const exp = new Date(found.expiresAt+"T00:00:00");
+    if(exp < today){ appliedPromo=null; promoFeedback="expired"; refreshCart(); return; }
+  }
+  if(found.maxUses && (found.uses||0) >= found.maxUses){
+    appliedPromo=null; promoFeedback="maxed"; refreshCart(); return;
+  }
+  appliedPromo=found; promoFeedback="ok";
   refreshCart();
 }
 
@@ -1190,10 +1423,13 @@ function refreshCart(){
                  onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromo();}">
           <button type="button" onclick="applyPromo()">Aplicar</button>
         </div>
-        <div class="promo-msg ${promoFeedback}">${
+        <div class="promo-msg ${promoFeedback==='ok' ? 'ok' : (promoFeedback ? 'err' : '')}">${
           appliedPromo && promoFeedback==='ok'
             ? '✓ Código «'+esc(appliedPromo.code)+'» aplicado'
-            : (promoFeedback==='err' ? '✕ Código no válido' : '')
+            : promoFeedback==='err' ? '✕ Código no válido'
+            : promoFeedback==='expired' ? '✕ Código vencido'
+            : promoFeedback==='maxed' ? '✕ Código agotado'
+            : ''
         }</div>
       </div>
       <div class="field"><label>Tu nombre</label>
@@ -1222,6 +1458,7 @@ function chg(uid,delta){
   const q = (cart.get(uid)||0) + delta;
   if(q<=0) cart.delete(uid); else cart.set(uid, q);
   refreshCart();
+  syncCardQty(uid);
 }
 
 function validate(){
@@ -1252,6 +1489,8 @@ function sendWhatsApp(){
     msg += `\n\n*Subtotal: ${clp(total)}*`;
     msg += `\n*Descuento (${appliedPromo.code}): −${clp(discount)}*`;
     msg += `\n*Total: ${clp(total - discount)}*`;
+    appliedPromo.uses = (appliedPromo.uses||0) + 1;
+    savePromos();
   } else {
     msg += `\n\n*Total: ${clp(total)}*`;
   }
