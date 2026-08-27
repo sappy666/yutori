@@ -160,9 +160,14 @@
   #noResults .kana{font-family:var(--serif);font-size:2.6rem;color:var(--line);display:block;margin-bottom:10px}
 
   .cat-block{padding-top:52px;scroll-margin-top:150px}
-  .cat-title{font-family:var(--serif);font-size:1.5rem;font-weight:700;display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .cat-title{font-family:var(--serif);font-size:1.5rem;font-weight:700;display:flex;align-items:center;gap:14px;margin-bottom:22px;padding:0 34px 10px 0;border-bottom:1px solid var(--line);position:relative}
+  .cat-title{cursor:pointer;list-style:none}
+  .cat-title::-webkit-details-marker{display:none}
   .cat-title::before{content:"";width:14px;height:14px;background:var(--red);border-radius:3px;transform:rotate(45deg);flex:none}
-  .cat-title::after{content:"";flex:1;height:1px;background:var(--line)}
+  .cat-title::after{content:"＋";position:absolute;right:0;top:0;color:var(--red);font-family:var(--sans);font-size:1.35rem;font-weight:400;line-height:1;transform:rotate(0deg);transition:transform .35s ease}
+  .cat-block[open] > .cat-title::after{content:"−";transform:rotate(180deg)}
+  .cat-title::marker{content:""}
+  .cat-block > .grid{max-height:0;overflow:hidden;transition:max-height .35s ease}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
   .card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:9px;overflow:hidden;transition:border-color .2s, transform .2s, box-shadow .25s}
@@ -324,13 +329,6 @@
     .cat-toggle{display:flex}
     .cat-panel{display:block;overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease, opacity .2s ease, margin-top .3s ease}
     .cat-nav.open .cat-panel{max-height:320px;opacity:1;margin-top:12px;overflow-y:auto}
-
-    /* Minimizar la barra de categorías sola al bajar por la carta */
-    .cat-nav{overflow:hidden;max-height:400px;padding-top:14px;padding-bottom:12px;
-      transition:max-height .3s ease, opacity .25s ease, padding .3s ease, margin .3s ease, border-color .3s ease}
-    .cat-nav.cat-nav-hidden{max-height:0;opacity:0;padding-top:0;padding-bottom:0;
-      margin-top:0;margin-bottom:0;border-bottom-color:transparent;pointer-events:none}
-
     .menu-wrap{padding:68px 18px 52px}
     .cat-block{padding-top:40px;scroll-margin-top:calc(var(--header-h,60px) + 66px)}
     .cat-nav{margin:22px 0 4px}
@@ -349,7 +347,9 @@
     .brand .mark{font-size:1.35rem}
     .grid{grid-template-columns:1fr;gap:14px}
     .hero-strip{gap:14px;flex-direction:column}
-    .cat-title{font-size:1.3rem}
+    .cat-title{font-size:1.3rem;border-bottom:none;padding-bottom:0}
+    .cat-block > .cat-title{margin-bottom:18px}
+    .cat-block:not([open]) > .cat-title{margin-bottom:0}
 
     /* En móvil, si la card tiene foto va chica y al lado de la info, no arriba */
     .card.has-img{
@@ -976,10 +976,27 @@ function renderMenu(){
       selEl.appendChild(opt);
     }
 
-    const block = document.createElement("div");
+    const block = document.createElement("details");
     block.className = "cat-block reveal active"; block.id = cid;
-    block.innerHTML = `<div class="cat-title">${esc(catObj.cat)}</div>`;
+    block.open = catIndex === 0;
+    block.innerHTML = `<summary class="cat-title">${esc(catObj.cat)}</summary>`;
     const grid = document.createElement("div"); grid.className = "grid";
+    block.querySelector(".cat-title").addEventListener("click", event=>{
+      event.preventDefault();
+      const opening = !block.open;
+      if(opening){
+        block.open = true;
+        grid.style.maxHeight = "0px";
+        requestAnimationFrame(()=>{ grid.style.maxHeight = grid.scrollHeight + "px"; });
+      }else{
+        grid.style.maxHeight = grid.scrollHeight + "px";
+        requestAnimationFrame(()=>{ grid.style.maxHeight = "0px"; });
+        grid.addEventListener("transitionend", ()=>{
+          block.open = false;
+          grid.style.maxHeight = "";
+        }, { once:true });
+      }
+    });
 
     catObj.items.forEach((it, itemIndex) => {
       const uid = "i" + (globalId++);
@@ -1008,6 +1025,7 @@ function renderMenu(){
     });
     block.appendChild(grid);
     menuEl.appendChild(block);
+    if(block.open) requestAnimationFrame(()=>{ grid.style.maxHeight = grid.scrollHeight + "px"; });
   });
 
   if(document.getElementById("menuSearch")) filterMenu();
@@ -1085,32 +1103,6 @@ function updateHeaderHeightVar(){
 updateHeaderHeightVar();
 window.addEventListener("load", updateHeaderHeightVar);
 window.addEventListener("resize", updateHeaderHeightVar);
-
-// Al desplazarse por la carta, la barra de categorías se minimiza sola
-// (deja más espacio para ver los platos) y reaparece al subir.
-(function initCatNavAutoHide(){
-  const nav = document.getElementById("catNav");
-  if(!nav) return;
-  let lastY = window.scrollY;
-  let ticking = false;
-  function onScroll(){
-    const y = window.scrollY;
-    const delta = y - lastY;
-    if(Math.abs(delta) > 6){
-      if(delta > 0 && y > nav.offsetTop + 40){
-        nav.classList.add("cat-nav-hidden");
-        toggleCatNav(false);
-      } else {
-        nav.classList.remove("cat-nav-hidden");
-      }
-      lastY = y;
-    }
-    ticking = false;
-  }
-  window.addEventListener("scroll", ()=>{
-    if(!ticking){ requestAnimationFrame(onScroll); ticking = true; }
-  }, { passive:true });
-})();
 
 // Revelar secciones (.reveal) al entrar en pantalla. Sin esto, #carta y el footer
 // quedaban en opacity:0 para siempre y la carta no se veía.
