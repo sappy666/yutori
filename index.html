@@ -460,8 +460,8 @@
   .suggest-add{flex:none;width:38px;height:38px;border-radius:50%;background:var(--red);color:#fff;font-size:1.35rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:.15s}
   .suggest-add:hover{background:var(--red-d);transform:scale(1.06)}
 
-  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120%);background:var(--red);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:200;transition:transform .3s;box-shadow:0 12px 30px -10px var(--red-glow)}
-  .toast.show{transform:translate(-50%,0)}
+  .toast{display:none;position:fixed;left:50%;bottom:26px;transform:translate(-50%,120%);background:var(--red);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;font-size:.9rem;z-index:200;transition:transform .3s;box-shadow:0 12px 30px -10px var(--red-glow)}
+  .toast.show{display:block;transform:translate(-50%,0)}
 
   /* Botón Flotante Scroll to Top */
   .scroll-top-btn{
@@ -485,6 +485,7 @@
     box-shadow:0 12px 30px -10px rgba(37,211,102,.55);
     transition:transform .2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .2s;
   }
+  .wa-float{display:none !important}
   .wa-float:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 16px 36px -8px rgba(37,211,102,.7)}
   .wa-float svg{width:29px;height:29px}
   @media(max-width:560px){
@@ -535,7 +536,7 @@
       <div class="kana-vert" aria-hidden="true">ゆとり</div>
     </div>
     <div class="hero-strip">
-      <span><span class="dot">&#9679;</span> <b>Ubicación</b> Etchevers 210, dpto 301, Viña del Mar (Solo para llevar)</span>
+      <span id="heroAddress"><span class="dot">&#9679;</span> <b>Ubicación</b> Etchevers 210, dpto 301, Viña del Mar (Solo para llevar)</span>
       <span><span class="dot">&#9679;</span> <b>Horario</b> Mar a Dom &middot; 12:00 a 02:00 AM</span>
       <span><span class="dot">&#9679;</span> <b>Pedidos</b> por WhatsApp</span>
     </div>
@@ -572,6 +573,7 @@
   <button class="btn btn-red" onclick="openProductModal()">＋ Producto</button>
   <button class="btn btn-ghost" onclick="openCategoryModal()">＋ Categoría</button>
   <button class="btn btn-ghost" onclick="openPromoModal()">🏷️ Promos</button>
+  <button class="btn btn-ghost" onclick="openBusinessModal()">⚙️ Datos del negocio</button>
   <button class="btn btn-ghost" onclick="openPasswordModal()">🔑 Contraseña</button>
   <button class="btn btn-ghost" style="border-color:var(--red); color:var(--red);" onclick="toggleAdminMode()">Salir ⏻</button>
 </div>
@@ -593,7 +595,7 @@
     <div class="section-head">
       <div class="eyebrow">Cómo llegar</div>
       <h2>Encuéntranos en Viña del Mar</h2>
-      <p>Etchevers 210, dpto 301, Viña del Mar. Retiro en local (solo para llevar) — coordina la hora aproximada por WhatsApp.</p>
+      <p id="mapAddress">Etchevers 210, dpto 301, Viña del Mar. Retiro en local (solo para llevar) — coordina la hora aproximada por WhatsApp.</p>
     </div>
     <div class="map-frame">
       <iframe
@@ -618,12 +620,12 @@
     </div>
     <div>
       <div class="lbl">Ubicación</div>
-      <p style="font-size:.9rem; color:var(--muted)">Etchevers 210, dpto 301<br>Viña del Mar, Chile 2520000<br><b style="color:var(--text)">(Solo para llevar)</b></p>
+      <p id="footerAddress" style="font-size:.9rem; color:var(--muted)">Etchevers 210, dpto 301<br>Viña del Mar, Chile 2520000<br><b style="color:var(--text)">(Solo para llevar)</b></p>
     </div>
     <div>
       <div class="lbl">Contacto</div>
-      <a href="https://wa.me/56942791623" target="_blank" rel="noopener">WhatsApp +56 9 4279 1623</a>
-      <a href="https://www.instagram.com/yutori_sushi_food/" target="_blank" rel="noopener">@yutori_sushi_food</a>
+      <a id="footerWhatsapp" href="https://wa.me/56942791623" target="_blank" rel="noopener">WhatsApp +56 9 4279 1623</a>
+      <a id="footerInstagram" href="https://www.instagram.com/yutori_sushi_food/" target="_blank" rel="noopener">@yutori_sushi_food</a>
     </div>
     <div>
       <div class="lbl">Horario</div>
@@ -631,7 +633,7 @@
       <a style="cursor:default">12:00 a 02:00 AM</a>
     </div>
   </div>
-  <div class="foot-bottom">© <span id="yr"></span> Yutori Sushi · Hecho con <span class="kana">ゆとり</span> · Carta digital por <a href="https://www.webfriends.cl" target="_blank" rel="noopener" style="color:var(--red);font-size:1.05rem;font-weight:700;text-decoration:none">Webfriends</a></div>
+  <div class="foot-bottom">© <span id="yr"></span> Yutori Sushi · Hecho con <span class="kana">ゆとり</span> · Carta digital por <span style="color:var(--red);font-weight:700">Meni</span></div>
 </footer>
 
 <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
@@ -728,7 +730,7 @@
 </button>
 
 <!-- Botón Flotante WhatsApp -->
-<a class="wa-float" href="https://wa.me/56942791623" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+<a class="wa-float" hidden href="https://wa.me/56942791623" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5 4.5.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 2a10 10 0 0 0-8.6 15L2 22l5.1-1.3A10 10 0 1 0 12 2m0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2"/></svg>
 </a>
 
@@ -882,6 +884,8 @@ if(!MENU || MENU.length === 0) {
 }
 
 const WA_NUMBER = "56942791623";
+const DEFAULT_BUSINESS = { whatsapp: WA_NUMBER, instagram: "https://www.instagram.com/yutori_sushi_food/", address: "Etchevers 210, dpto 301, Viña del Mar" };
+let BUSINESS = JSON.parse(localStorage.getItem("yutori_business") || "null") || DEFAULT_BUSINESS;
 const clp = n => "$" + Number(n).toLocaleString("es-CL");
 const esc = s => String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const idMap = new Map();
@@ -957,8 +961,13 @@ function renderMenu(){
     const cid = slug(catObj.cat);
     const chip = document.createElement("a");
     chip.className = "cat"; chip.href = "#"+cid; chip.textContent = catObj.cat; chip.dataset.target = cid;
-    chip.addEventListener("click", ()=>{
+    chip.addEventListener("click", event=>{
+      event.preventDefault();
       const s=document.getElementById("menuSearch"); if(s&&s.value){ s.value=""; filterMenu(); }
+      const block = document.getElementById(cid);
+      const grid = block?.querySelector(".grid");
+      if(block && grid && !block.open){ block.open = true; grid.style.maxHeight = grid.scrollHeight + "px"; }
+      block?.scrollIntoView({ behavior:"smooth", block:"start" });
       const label = document.querySelector("#catToggle span");
       if(label) label.textContent = catObj.cat;
       toggleCatNav(false);
@@ -1088,6 +1097,7 @@ function toggleCatNav(force){
 
 document.documentElement.classList.add('js-ready');
 renderMenu();
+applyBusinessInfo();
 
 // Altura real del header -> variable CSS, para que el cat-nav (sticky) se
 // pegue justo debajo y no quede montado encima de las tarjetas al hacer scroll.
@@ -1252,6 +1262,48 @@ function savePassword(){
   toast("Contraseña actualizada");
 }
 
+function applyBusinessInfo(){
+  const phone = String(BUSINESS.whatsapp || WA_NUMBER).replace(/\D/g, "");
+  document.querySelectorAll('a[href^="https://wa.me/"]').forEach(link=>link.href = `https://wa.me/${phone}`);
+  document.querySelectorAll('a[href*="instagram.com"]').forEach(link=>link.href = BUSINESS.instagram);
+  const address = BUSINESS.address || DEFAULT_BUSINESS.address;
+  const heroAddress = document.getElementById("heroAddress");
+  const mapAddress = document.getElementById("mapAddress");
+  const footerAddress = document.getElementById("footerAddress");
+  if(heroAddress) heroAddress.innerHTML = `<span class="dot">&#9679;</span> <b>Ubicación</b> ${esc(address)} (Solo para llevar)`;
+  if(mapAddress) mapAddress.textContent = `${address}. Retiro en local (solo para llevar) — coordina la hora aproximada por WhatsApp.`;
+  if(footerAddress) footerAddress.innerHTML = `${esc(address)}<br><b style="color:var(--text)">(Solo para llevar)</b>`;
+  const map = document.querySelector(".map-frame iframe");
+  if(map) map.src = `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
+  const directions = document.querySelector('.map-actions a.btn-red');
+  if(directions) directions.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+  const footerWhatsapp = document.getElementById("footerWhatsapp");
+  const footerInstagram = document.getElementById("footerInstagram");
+  if(footerWhatsapp) footerWhatsapp.textContent = `WhatsApp +${phone}`;
+  if(footerInstagram) footerInstagram.textContent = BUSINESS.instagram.replace(/https?:\/\/(www\.)?instagram\.com\//, "@").replace(/\/$/, "");
+}
+
+function openBusinessModal(){
+  openDrawerContainer('Datos del negocio <span class="kana">情報</span>');
+  document.getElementById("drawerFoot").style.display = "none";
+  document.getElementById("drawerBody").innerHTML = `<div class="fields">
+    <div class="field"><label>Número de WhatsApp</label><input id="businessWhatsapp" type="tel" value="${esc(BUSINESS.whatsapp)}" placeholder="56912345678"></div>
+    <div class="field"><label>Instagram</label><input id="businessInstagram" type="url" value="${esc(BUSINESS.instagram)}" placeholder="https://www.instagram.com/tu_cuenta/"></div>
+    <div class="field"><label>Ubicación</label><input id="businessAddress" type="text" value="${esc(BUSINESS.address)}" placeholder="Dirección del local"></div>
+    <button class="wa" style="margin-top:14px" onclick="saveBusinessInfo()">Guardar datos</button>
+  </div>`;
+}
+
+function saveBusinessInfo(){
+  const whatsapp = document.getElementById("businessWhatsapp").value.replace(/\D/g, "");
+  const instagram = document.getElementById("businessInstagram").value.trim();
+  const address = document.getElementById("businessAddress").value.trim();
+  if(!whatsapp || !instagram || !address){ alert("Completa todos los datos del negocio."); return; }
+  BUSINESS = { whatsapp, instagram, address };
+  localStorage.setItem("yutori_business", JSON.stringify(BUSINESS));
+  applyBusinessInfo(); closeDrawer(); toast("Datos del negocio actualizados");
+}
+
 /* ---- Códigos de promoción ---- */
 let editingPromoIndex = null;
 
@@ -1270,7 +1322,6 @@ function fmtDate(iso){
 function renderPromoModal(){
   const list = PROMOS.length
     ? PROMOS.map((pr,i)=>{
-        const usesInfo = pr.maxUses ? `${pr.uses||0}/${pr.maxUses} usos` : "Usos ilimitados";
         const expInfo = pr.expiresAt ? `Vence ${fmtDate(pr.expiresAt)}` : "Sin vencimiento";
         return `
         <div class="promo-row" style="flex-direction:column;align-items:stretch;gap:6px">
@@ -1281,7 +1332,7 @@ function renderPromoModal(){
               <button class="admin-card-btn del" style="display:inline-flex" onclick="deletePromo(${i})">🗑️</button>
             </div>
           </div>
-          <div style="font-size:.78rem;color:var(--muted)">${usesInfo} · ${expInfo}</div>
+          <div style="font-size:.78rem;color:var(--muted)">${expInfo}</div>
         </div>`;
       }).join("")
     : `<p style="color:var(--muted);font-size:.88rem;margin-bottom:6px">Aún no hay códigos creados.</p>`;
@@ -1300,10 +1351,8 @@ function renderPromoModal(){
         </select></div>
       <div class="field"><label id="prValLbl">Porcentaje (%)</label>
         <input id="prValue" type="number" placeholder="Ej: 10"></div>
-      <div class="field"><label>Límite de usos (opcional)</label>
-        <input id="prMaxUses" type="number" min="1" placeholder="Vacío = ilimitado"></div>
       <div class="field"><label>Fecha de vencimiento (opcional)</label>
-        <input id="prExpires" type="date"></div>
+        <input id="prExpires" type="date" min="${new Date().toISOString().slice(0,10)}"></div>
       <div style="display:flex;gap:8px;margin-top:8px">
         <button class="wa" id="prSaveBtn" style="flex:1" onclick="savePromo()">${editing ? 'Guardar cambios' : 'Agregar código'}</button>
         <button type="button" class="btn btn-ghost" id="prCancelEdit" style="${editing ? '' : 'display:none'}" onclick="cancelEditPromo()">Cancelar</button>
@@ -1316,7 +1365,6 @@ function renderPromoModal(){
     document.getElementById("prType").value = pr.type;
     document.getElementById("prValLbl").textContent = pr.type==='percent' ? 'Porcentaje (%)' : 'Monto (CLP)';
     document.getElementById("prValue").value = pr.value;
-    document.getElementById("prMaxUses").value = pr.maxUses || "";
     document.getElementById("prExpires").value = pr.expiresAt || "";
   }
 }
@@ -1335,23 +1383,21 @@ function savePromo(){
   const code = (document.getElementById("prCode").value||"").trim().toUpperCase();
   const type = document.getElementById("prType").value;
   const value = parseInt(document.getElementById("prValue").value);
-  const maxUsesRaw = document.getElementById("prMaxUses").value.trim();
-  const maxUses = maxUsesRaw ? parseInt(maxUsesRaw) : null;
   const expiresAt = document.getElementById("prExpires").value || null;
 
   if(!code || isNaN(value) || value<=0){ alert("Completa el código y un valor válido."); return; }
   if(type==='percent' && value>100){ alert("El porcentaje no puede superar 100."); return; }
-  if(maxUsesRaw && (isNaN(maxUses) || maxUses<=0)){ alert("El límite de usos debe ser un número positivo."); return; }
+  if(expiresAt){ const today = new Date(); today.setHours(0,0,0,0); if(new Date(expiresAt+"T00:00:00") < today){ alert("La fecha de vencimiento debe ser hoy o una fecha futura."); return; } }
 
   const dupIndex = PROMOS.findIndex(p=>p.code===code);
 
   if(editingPromoIndex === null){
     if(dupIndex !== -1){ alert("Ese código ya existe."); return; }
-    PROMOS.push({ code, type, value, maxUses, expiresAt, uses:0 });
+    PROMOS.push({ code, type, value, expiresAt });
     toast("Código agregado");
   } else {
     if(dupIndex !== -1 && dupIndex !== editingPromoIndex){ alert("Ese código ya existe."); return; }
-    PROMOS[editingPromoIndex] = { ...PROMOS[editingPromoIndex], code, type, value, maxUses, expiresAt };
+    PROMOS[editingPromoIndex] = { ...PROMOS[editingPromoIndex], code, type, value, expiresAt };
     toast("Código actualizado");
     editingPromoIndex = null;
   }
@@ -1593,7 +1639,7 @@ let suggestOpen = false;
 function buildSuggestions(){
   const items = SUGGESTIONS
     .map(n => ({ n, uid: findUidByName(n) }))
-    .filter(s => s.uid && !cart.has(s.uid));
+    .filter(s => s.uid);
   if(!items.length) return "";
   const rows = items.map(s=>{
     const it = idMap.get(s.uid).item;
@@ -1607,13 +1653,7 @@ function buildSuggestions(){
         <button class="suggest-add" onclick="addSuggestion('${s.uid}')" aria-label="Agregar ${esc(it.n)}">＋</button>
       </div>`;
   }).join("");
-  return `
-    <details class="suggest" ${suggestOpen?'open':''} ontoggle="suggestOpen=this.open">
-      <summary class="suggest-h">¿Algo más para tu pedido?
-        <svg class="suggest-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </summary>
-      <div class="suggest-content">${rows}</div>
-    </details>`;
+  return `<section class="suggest"><div class="suggest-h">¿Algo más para tu pedido?</div><div class="suggest-content">${rows}</div></section>`;
 }
 
 function promoDiscount(subtotal){
@@ -1634,9 +1674,6 @@ function applyPromo(){
     const exp = new Date(found.expiresAt+"T00:00:00");
     if(exp < today){ appliedPromo=null; promoFeedback="expired"; refreshCart(); return; }
   }
-  if(found.maxUses && (found.uses||0) >= found.maxUses){
-    appliedPromo=null; promoFeedback="maxed"; refreshCart(); return;
-  }
   appliedPromo=found; promoFeedback="ok";
   refreshCart();
 }
@@ -1650,7 +1687,7 @@ function refreshCart(){
   if(cart.size===0){
     appliedPromo=null; promoFeedback="";
     foot.style.display="none";
-    body.innerHTML=`<div class="empty"><span class="kana">空</span>Tu pedido está vacío.<br>Agrega algo rico de la carta.</div>`;
+    body.innerHTML=`<div class="empty"><span class="kana">空</span>Tu pedido está vacío.<br>Agrega algo rico de la carta.</div>${buildSuggestions()}`;
     return;
   }
   foot.style.display="block";
@@ -1694,7 +1731,6 @@ function refreshCart(){
                 ? '✓ Código «'+esc(appliedPromo.code)+'» aplicado'
                 : promoFeedback==='err' ? '✕ Código no válido'
                 : promoFeedback==='expired' ? '✕ Código vencido'
-                : promoFeedback==='maxed' ? '✕ Código agotado'
                 : ''
             }</div>
           </div>
@@ -1702,9 +1738,7 @@ function refreshCart(){
       </div>
       <div class="field"><label>Tu nombre</label>
         <input id="fName" type="text" placeholder="Ej: Juan Pablo Galdamez" oninput="validate()"></div>
-      <div class="field"><label>Modalidad de servicio</label>
-        <input type="text" value="Solo para llevar (Retiro en local)" disabled style="opacity:0.7; background:var(--surface-2)">
-      </div>
+      <div class="field"><input type="text" value="Solo para llevar (Retiro en local)" disabled style="opacity:0.7; background:var(--surface-2)"></div>
       <div class="field"><label>Notas / Indicaciones (opcional)</label>
         <textarea id="fNotes" placeholder="Ej: sin palta, salsas extra, hora aproximada de retiro, etc."></textarea></div>
     </div>`;
@@ -1718,7 +1752,7 @@ function refreshCart(){
     </div>` : "";
 
   body.innerHTML = rows + summary + buildSuggestions() + fields;
-  document.getElementById("total").textContent = clp(finalTotal);
+  document.getElementById("total").innerHTML = discount>0 ? `<span style="font-size:.72rem;color:var(--muted);font-weight:400">Subtotal ${clp(total)}<br><b style="color:#3fae63">Descuento −${clp(discount)}</b><br>Total</span> ${clp(finalTotal)}` : clp(finalTotal);
   validate();
 }
 
@@ -1750,23 +1784,20 @@ function sendWhatsApp(){
     lines.push(`• ${qty}× ${it.n} — ${clp(sub)}`);
   });
 
-  let msg = `¡Hola Yutori! 🍣 Quiero hacer un pedido para RETIRO:\n\n`;
+  let msg = `¡Hola Yutori! 🍣 Quiero hacer un pedido para retirar:\n\n`;
   msg += lines.join("\n");
   const discount = promoDiscount(total);
   if(discount>0){
     msg += `\n\n*Subtotal: ${clp(total)}*`;
     msg += `\n*Descuento (${appliedPromo.code}): −${clp(discount)}*`;
     msg += `\n*Total: ${clp(total - discount)}*`;
-    appliedPromo.uses = (appliedPromo.uses||0) + 1;
-    savePromos();
   } else {
     msg += `\n\n*Total: ${clp(total)}*`;
   }
   msg += `\n\n👤 Nombre: ${name}`;
-  msg += `\n🛍️ Modalidad: Solo para llevar (Retiro en local)`;
   if(notes) msg += `\n📝 Notas: ${notes}`;
 
-  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+  window.open(`https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
 }
 
 const TRANSFER_INFO = {
